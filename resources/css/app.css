@@ -1,0 +1,2007 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ══════════════════════════════════════════════════════════════
+   SALU EXAM PORTAL - AJRAK CULTURAL DESIGN SYSTEM
+   Shah Abdul Latif University, Khairpur
+   ══════════════════════════════════════════════════════════════ */
+
+:root {
+    --ajrak-red: #700c11;
+    --ajrak-red-dark: #4a070a;
+    --ajrak-navy: #0b133d;
+    --ajrak-navy-dark: #070c28;
+    --ajrak-gold: #d4af37;
+    --ajrak-gold-light: #f3e5ab;
+    --brand: #700c11;
+    --brand-dark: #4a070a;
+    --accent: #d4af37;
+    --ink: #1e293b;
+    --muted: #64748b;
+    --line: #e2e8f0;
+    --surface: #ffffff;
+    --page: #f4f6fa;
+}
+
+html, body {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    color: var(--ink);
+    background-color: #f4f6fa;
+    background-image: 
+        radial-gradient(rgba(112, 12, 17, 0.05) 1.5px, transparent 1.5px),
+        radial-gradient(rgba(11, 19, 61, 0.04) 1.5px, #f4f6fa 1.5px);
+    background-size: 24px 24px;
+    background-position: 0 0, 12px 12px;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+a {
+    color: var(--ajrak-red);
+}
+
+/* ── SINDHI AJRAK CULTURAL STYLES ── */
+/* ── SALU MODERN PORTAL LAYOUT & SOFT GRADIENTS ── */
+
+.wrapper {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f6f8fc;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   EXECUTIVE SIDEBAR (DEEP SAPPHIRE GRADIENT)
+   ══════════════════════════════════════════════════════════════ */
+.salu-portal-sidebar {
+    width: 265px;
+    flex: 0 0 265px;
+    color: #e2e8f0;
+    background: linear-gradient(180deg, #091338 0%, #0d1e56 45%, #081135 100%);
+    border-right: 1px solid rgba(212, 175, 55, 0.15);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    box-shadow: 4px 0 25px rgba(2, 6, 26, 0.35);
+    transition: margin-left .25s ease;
+}
+
+.salu-portal-sidebar.active {
+    margin-left: -265px;
+}
+
+.salu-portal-sidebar .sidebar-header {
+    padding: 1.25rem 1.15rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.salu-sidebar-logo-wrap {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ffffff;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #f2994a;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+}
+
+.salu-sidebar-logo-wrap .brand-logo {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: none;
+}
+
+.brand-text-block {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.brand-title {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+}
+
+.brand-subtitle {
+    font-size: 0.68rem;
+    color: #f2994a;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+}
+
+.sidebar-nav-container {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    padding: 1rem 0.85rem;
+}
+
+.sidebar-section-label {
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: #64748b;
+    letter-spacing: 0.08em;
+    padding: 0.5rem 0.75rem 0.25rem;
+    margin-bottom: 0.25rem;
+}
+
+.salu-portal-sidebar .components {
+    margin: 0;
+    padding: 0;
+}
+
+.salu-portal-sidebar .components li {
+    margin-bottom: 3px;
+}
+
+.salu-portal-sidebar .components li a {
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 0.85rem;
+    color: #94a3b8;
+    font-size: 0.84rem;
+    font-weight: 600;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.18s ease;
+}
+
+.salu-portal-sidebar .components li a:hover {
+    color: #ffffff;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.07) 0%, transparent 100%);
+    padding-left: 1rem;
+}
+
+.salu-portal-sidebar .components li a.active,
+.salu-portal-sidebar .components li.active > a {
+    color: #ffffff !important;
+    background: linear-gradient(90deg, #f27220 0%, #d95514 100%) !important;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(242, 114, 32, 0.35);
+}
+
+.salu-portal-sidebar .components i {
+    width: 20px;
+    font-size: 0.92rem;
+}
+
+/* SIDEBAR USER PROFILE FOOTER */
+.sidebar-user-footer {
+    padding: 0.85rem 1rem;
+    background: rgba(5, 11, 34, 0.6);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.salu-avatar-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f27220, #b84307);
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 0.82rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(242, 114, 32, 0.4);
+}
+
+.salu-user-meta {
+    line-height: 1.15;
+}
+
+.salu-user-name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.salu-user-role-chip {
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: #f2994a;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.salu-logout-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.salu-logout-btn:hover {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: #ef4444;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   TOP HERO NAVBAR WITH SOFT BLUR & GRADIENT
+   ══════════════════════════════════════════════════════════════ */
+.salu-page-content {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 100vh;
+    background-color: #f6f8fc;
+}
+
+.salu-top-navbar {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+    box-shadow: 0 4px 20px rgba(11, 19, 61, 0.03);
+    padding: 0.65rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+
+.salu-nav-toggle-btn {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    color: #091338;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.salu-nav-toggle-btn:hover {
+    background: #091338;
+    color: #ffffff;
+    border-color: #091338;
+}
+
+.salu-page-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.salu-page-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #091338;
+    letter-spacing: -0.01em;
+}
+
+.salu-session-chip {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #334155;
+    background: #e2e8f0;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+}
+
+.salu-header-user-pill {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 30px;
+    padding: 0.25rem 0.85rem 0.25rem 0.35rem;
+}
+
+.salu-header-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1e3a8a, #091338);
+    color: #f2994a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+.salu-icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.salu-icon-btn:hover {
+    background: #f27220;
+    color: #ffffff;
+    border-color: #f27220;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   STUDENT DASHBOARD - HERO & SOFT GRADIENT CARDS
+   ══════════════════════════════════════════════════════════════ */
+.salu-student-hero-card {
+    position: relative;
+    background: linear-gradient(135deg, #091338 0%, #11256c 50%, #1b3894 100%) !important;
+    border: 1.5px solid rgba(212, 175, 55, 0.35) !important;
+    border-radius: 24px !important;
+    color: #ffffff !important;
+    box-shadow: 0 15px 40px rgba(9, 19, 56, 0.25), 0 0 25px rgba(242, 153, 74, 0.12) !important;
+    overflow: hidden;
+}
+
+.salu-student-hero-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+        radial-gradient(rgba(242, 153, 74, 0.12) 1.5px, transparent 1.5px), 
+        radial-gradient(rgba(255, 255, 255, 0.06) 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+    background-position: 0 0, 12px 12px;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.salu-hero-avatar-wrap {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 3px solid #f2994a;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    flex-shrink: 0;
+}
+
+.salu-hero-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: #081135;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.salu-hero-greeting {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.01em;
+}
+
+.salu-hero-badge {
+    background: linear-gradient(135deg, #f2994a, #d45010);
+    color: #ffffff;
+    font-weight: 800;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.salu-hero-meta {
+    color: #cbd5e1;
+    font-size: 0.88rem;
+    margin-top: 0.35rem;
+}
+
+.salu-hero-stat-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    padding: 0.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 130px;
+}
+
+.salu-stat-sub {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.salu-stat-val {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   STATUS & NOTICE BANNERS (SOFT PASTEL GRADIENTS)
+   ══════════════════════════════════════════════════════════════ */
+.salu-status-banner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-radius: 18px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+.salu-banner-amber {
+    background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+    border: 1.5px solid #fde68a;
+    border-left: 5px solid #f59e0b !important;
+}
+
+.salu-banner-blue {
+    background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    border: 1.5px solid #bfdbfe;
+    border-left: 5px solid #2563eb !important;
+}
+
+.salu-banner-green {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 1.5px solid #bbf7d0;
+    border-left: 5px solid #16a34a !important;
+}
+
+.salu-banner-red {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border: 1.5px solid #fecaca;
+    border-left: 5px solid #dc2626 !important;
+}
+
+.salu-banner-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    flex-shrink: 0;
+}
+
+/* PILL BUTTONS */
+.salu-btn-pill-green {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 30px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    transition: all 0.2s ease;
+}
+
+.salu-btn-pill-green:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.45);
+}
+
+.salu-btn-pill-blue {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 30px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+    transition: all 0.2s ease;
+}
+
+.salu-btn-pill-blue:hover {
+    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
+}
+
+.salu-btn-pill-red {
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 30px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+    transition: all 0.2s ease;
+}
+
+.salu-btn-pill-outline {
+    background: #ffffff;
+    color: #334155;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 0.5rem 1.15rem;
+    border-radius: 30px;
+    border: 1.5px solid #cbd5e1;
+    transition: all 0.2s ease;
+}
+
+.salu-btn-pill-outline:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+    color: #0f172a;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   QUICK SERVICE ACTION CARDS (SOFT GRADIENTS & LIFT HOVER)
+   ══════════════════════════════════════════════════════════════ */
+.salu-service-card {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 1px solid rgba(226, 232, 240, 0.85) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 4px 16px rgba(11, 19, 61, 0.04) !important;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden;
+}
+
+.salu-service-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(242, 114, 32, 0.4) !important;
+    box-shadow: 0 12px 30px rgba(11, 19, 61, 0.08), 0 0 15px rgba(242, 114, 32, 0.08) !important;
+}
+
+.salu-service-disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.salu-service-disabled:hover {
+    transform: none;
+    box-shadow: 0 4px 16px rgba(11, 19, 61, 0.04) !important;
+}
+
+.salu-service-icon-box {
+    width: 62px;
+    height: 62px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.45rem;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.salu-icon-orange {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    box-shadow: 0 8px 20px rgba(249, 115, 22, 0.35);
+}
+
+.salu-icon-blue {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+}
+
+.salu-icon-cyan {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    box-shadow: 0 8px 20px rgba(2, 132, 199, 0.35);
+}
+
+.salu-icon-green {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+}
+
+.salu-icon-indigo {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
+}
+
+.salu-icon-purple {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
+}
+
+.salu-icon-pink {
+    background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+    box-shadow: 0 8px 20px rgba(236, 72, 153, 0.35);
+}
+
+.salu-icon-gray {
+    background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+}
+
+.salu-service-title {
+    font-size: 1.02rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
+}
+
+.salu-service-desc {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-bottom: 0;
+    line-height: 1.35;
+}
+
+.salu-service-link {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #f27220;
+    display: inline-block;
+    transition: color 0.15s;
+}
+
+.salu-corner-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: #fef3c7;
+    color: #b45309;
+    border: 1px solid #fde68a;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 0.2rem 0.55rem;
+    border-radius: 20px;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ENROLLMENT OVERVIEW CARD
+   ══════════════════════════════════════════════════════════════ */
+.salu-overview-card {
+    background: #ffffff !important;
+    border: 1px solid rgba(226, 232, 240, 0.85) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 4px 20px rgba(11, 19, 61, 0.04) !important;
+    overflow: hidden;
+}
+
+.salu-overview-header {
+    background: linear-gradient(135deg, #091338 0%, #12225e 100%);
+}
+
+.salu-metric-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1rem;
+}
+
+.salu-metric-label {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 800;
+    color: #64748b;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+}
+
+.salu-metric-value {
+    display: block;
+    font-size: 0.95rem;
+    color: #0f172a;
+    word-break: break-word;
+}
+
+.salu-portal-footer {
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+}
+
+/* ═══════════════════════════════════════════
+   SALU GLOBAL TOAST SYSTEM
+═══════════════════════════════════════════ */
+.salu-toast-container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 380px;
+    width: calc(100% - 48px);
+    pointer-events: none;
+}
+
+.salu-toast {
+    pointer-events: auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.08);
+    border-left: 5px solid #2563eb;
+    animation: toastSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.3s ease;
+}
+
+.salu-toast-fadeout {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+}
+
+@keyframes toastSlideIn {
+    from { opacity: 0; transform: translateX(30px) scale(0.95); }
+    to { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+.salu-toast-success {
+    border-left-color: #16a34a;
+}
+.salu-toast-success .salu-toast-icon-wrap {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.salu-toast-error {
+    border-left-color: #dc2626;
+}
+.salu-toast-error .salu-toast-icon-wrap {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.salu-toast-warning {
+    border-left-color: #d97706;
+}
+.salu-toast-warning .salu-toast-icon-wrap {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.salu-toast-icon-wrap {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.salu-toast-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.salu-toast-title {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 2px;
+}
+
+.salu-toast-msg {
+    font-size: 0.82rem;
+    color: #475569;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.salu-toast-close {
+    background: transparent;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    margin-top: -2px;
+}
+.salu-toast-close:hover {
+    color: #475569;
+}
+
+#content {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    min-height: 100vh;
+    flex-direction: column;
+}
+
+.navbar {
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, .04);
+}
+
+#sidebarCollapse {
+    color: #fff;
+    border: 0;
+    background: var(--brand);
+}
+
+.container-fluid.mt-4 {
+    flex: 1;
+    padding-bottom: 24px;
+}
+
+.card,
+.panel,
+.metric-card {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+}
+
+.card {
+    overflow: hidden;
+}
+
+.btn-primary {
+    border-color: var(--brand);
+    background: var(--brand);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    border-color: var(--brand-dark);
+    background: var(--brand-dark);
+}
+
+.btn-outline-primary {
+    color: var(--brand);
+    border-color: var(--brand);
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+    border-color: var(--brand);
+    background: var(--brand);
+}
+
+.bg-primary {
+    background-color: var(--brand) !important;
+}
+
+.text-primary {
+    color: var(--brand) !important;
+}
+
+.dashboard-header {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+.dashboard-header h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    font-weight: 700;
+}
+
+.eyebrow {
+    color: var(--accent);
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.metric-card {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    height: 100%;
+    padding: 18px;
+    background: var(--surface);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, .05);
+}
+
+.metric-card p,
+.stack-list span {
+    margin: 0;
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+.metric-card strong {
+    display: block;
+    font-size: 1.75rem;
+    line-height: 1.1;
+}
+
+.metric-icon {
+    display: inline-flex;
+    width: 44px;
+    height: 44px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.panel {
+    background: var(--surface);
+    box-shadow: 0 1px 2px rgba(16, 24, 40, .05);
+}
+
+.panel-header {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--line);
+}
+
+.panel-header h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.status-pill {
+    display: inline-flex;
+    min-width: 78px;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: .75rem;
+    font-weight: 700;
+}
+
+.status-approved {
+    color: #067647;
+    background: #dcfae6;
+}
+
+.status-pending,
+.status-draft {
+    color: #b54708;
+    background: #fef0c7;
+}
+
+.status-rejected {
+    color: #b42318;
+    background: #fee4e2;
+}
+
+.stack-list > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+}
+
+.stack-list > div:last-child {
+    border-bottom: 0;
+}
+
+.stack-list strong {
+    font-size: 1.15rem;
+}
+
+.footer {
+    border-top: 1px solid var(--line);
+}
+
+.premium-dashboard {
+    max-width: 1480px;
+    margin: 0 auto;
+}
+
+.dashboard-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    min-height: 210px;
+    padding: 2rem 2.25rem;
+    overflow: hidden;
+    border: 1px solid rgba(212, 175, 55, .45);
+    border-radius: 18px;
+    box-shadow: 0 18px 42px rgba(11, 19, 61, .16);
+    color: #fff;
+}
+
+.dashboard-hero--college {
+    background: linear-gradient(125deg, #0b133d 0%, #162558 58%, #70131b 100%);
+}
+
+.dashboard-hero--executive {
+    background: linear-gradient(125deg, #071536 0%, #172a62 52%, #6e0c15 100%);
+}
+
+.dashboard-hero::after {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    content: "";
+    opacity: .75;
+    background-image: radial-gradient(rgba(212, 175, 55, .28) 1px, transparent 1px), radial-gradient(rgba(255, 255, 255, .09) 1px, transparent 1px);
+    background-position: 0 0, 12px 12px;
+    background-size: 24px 24px;
+    pointer-events: none;
+}
+
+.dashboard-hero__content,
+.dashboard-hero__status,
+.window-control {
+    position: relative;
+    z-index: 1;
+}
+
+.dashboard-hero__content {
+    max-width: 760px;
+}
+
+.dashboard-kicker,
+.dashboard-panel__eyebrow {
+    display: block;
+    color: #d8b75d;
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+.dashboard-hero h1 {
+    margin: .5rem 0;
+    color: #fff;
+    font-size: clamp(1.7rem, 3vw, 2.45rem);
+    font-weight: 800;
+    letter-spacing: -.035em;
+}
+
+.dashboard-hero p {
+    max-width: 680px;
+    margin: 0;
+    color: rgba(255, 255, 255, .76);
+}
+
+.dashboard-hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem 1.25rem;
+    margin-top: 1.25rem;
+    color: rgba(255, 255, 255, .84);
+    font-size: .83rem;
+}
+
+.dashboard-hero__meta i {
+    margin-right: .4rem;
+    color: #e2c776;
+}
+
+.dashboard-hero__status,
+.window-control {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    min-width: 220px;
+    padding: 1rem 1.1rem;
+    border: 1px solid rgba(255, 255, 255, .18);
+    border-radius: 12px;
+    background: rgba(4, 10, 31, .28);
+    backdrop-filter: blur(8px);
+}
+
+.dashboard-hero__status small,
+.window-control small {
+    display: block;
+    color: rgba(255, 255, 255, .62);
+    font-size: .68rem;
+    font-weight: 800;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+}
+
+.dashboard-hero__status strong,
+.window-control strong {
+    display: block;
+    color: #fff;
+    font-size: .92rem;
+}
+
+.window-control {
+    display: grid;
+    gap: .45rem;
+    min-width: 235px;
+}
+
+.status-orb {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-right: .42rem;
+    border-radius: 50%;
+}
+
+.status-orb--open {
+    background: #4ade80;
+    box-shadow: 0 0 0 4px rgba(74, 222, 128, .18);
+}
+
+.status-orb--closed {
+    background: #fca5a5;
+    box-shadow: 0 0 0 4px rgba(252, 165, 165, .16);
+}
+
+.executive-stat {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 100%;
+    min-height: 134px;
+    padding: 1.15rem;
+    border: 1px solid #e5e9f3;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 8px 20px rgba(16, 24, 40, .06);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.executive-stat:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 30px rgba(16, 24, 40, .1);
+}
+
+.executive-stat__icon {
+    display: inline-flex;
+    flex: 0 0 48px;
+    width: 48px;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 1.12rem;
+}
+
+.executive-stat span:not(.executive-stat__icon) {
+    display: block;
+    color: #667085;
+    font-size: .75rem;
+    font-weight: 750;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+}
+
+.executive-stat strong {
+    display: block;
+    margin: .2rem 0;
+    color: #101828;
+    font-size: 1.65rem;
+    font-weight: 800;
+    letter-spacing: -.04em;
+    line-height: 1.05;
+}
+
+.executive-stat small {
+    color: #7a8496;
+    font-size: .76rem;
+}
+
+.executive-stat--navy .executive-stat__icon {
+    color: #20396f;
+    background: #e8eefc;
+}
+
+.executive-stat--amber .executive-stat__icon {
+    color: #a45b00;
+    background: #fff3d7;
+}
+
+.executive-stat--green .executive-stat__icon {
+    color: #147044;
+    background: #e3f8ed;
+}
+
+.executive-stat--wine .executive-stat__icon {
+    color: #841927;
+    background: #fce9ec;
+}
+
+.dashboard-panel {
+    overflow: hidden;
+    border: 1px solid #e4e8f1;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(16, 24, 40, .055);
+}
+
+.dashboard-panel--compact {
+    box-shadow: 0 5px 16px rgba(16, 24, 40, .045);
+}
+
+.dashboard-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 78px;
+    padding: 1.1rem 1.25rem;
+    border-bottom: 1px solid #e9edf4;
+}
+
+.dashboard-panel__eyebrow {
+    margin-bottom: .22rem;
+    color: #a06d0a;
+    font-size: .63rem;
+}
+
+.dashboard-panel h2 {
+    margin: 0;
+    color: #18223b;
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.dashboard-table thead th {
+    padding: .8rem 1.25rem;
+    border-bottom: 1px solid #e4e8f1;
+    background: #f8fafc;
+    color: #667085;
+    font-size: .68rem;
+    font-weight: 800;
+    letter-spacing: .055em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.dashboard-table tbody td {
+    padding: .95rem 1.25rem;
+    border-color: #edf0f5;
+    color: #344054;
+    font-size: .86rem;
+}
+
+.dashboard-table tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.dashboard-table tbody tr:hover td {
+    background: #fbfcfe;
+}
+
+.dashboard-table strong,
+.dashboard-table small {
+    display: block;
+}
+
+.dashboard-table small {
+    margin-top: .18rem;
+    color: #7c8799;
+    font-size: .74rem;
+}
+
+.dashboard-summary-list > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .95rem 1.25rem;
+    border-bottom: 1px solid #edf0f5;
+}
+
+.dashboard-summary-list > div:last-child {
+    border-bottom: 0;
+}
+
+.dashboard-summary-list span {
+    color: #526075;
+    font-size: .84rem;
+}
+
+.dashboard-summary-list span i {
+    width: 20px;
+    margin-right: .45rem;
+    color: #8d650f;
+}
+
+.dashboard-summary-list strong {
+    color: #18223b;
+    font-size: .9rem;
+    font-weight: 800;
+    text-align: right;
+}
+
+.dashboard-action-list {
+    padding: .45rem .8rem .8rem;
+}
+
+.dashboard-action-list a {
+    display: grid;
+    grid-template-columns: 24px 1fr 14px;
+    align-items: center;
+    gap: .5rem;
+    padding: .82rem .55rem;
+    border-bottom: 1px solid #edf0f5;
+    color: #344054;
+    font-size: .85rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.dashboard-action-list a:last-child {
+    border-bottom: 0;
+}
+
+.dashboard-action-list a > i:first-child {
+    color: #821723;
+}
+
+.dashboard-action-list a > i:last-child {
+    color: #98a2b3;
+    font-size: .7rem;
+}
+
+.dashboard-action-list a:hover {
+    color: #821723;
+}
+
+.dashboard-shortcuts {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    overflow: hidden;
+    border: 1px solid #e4e8f1;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(16, 24, 40, .045);
+}
+
+.dashboard-shortcuts a {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    min-height: 78px;
+    padding: 1rem;
+    border-right: 1px solid #e9edf4;
+    color: #25324e;
+    font-size: .8rem;
+    font-weight: 800;
+    line-height: 1.25;
+    text-decoration: none;
+}
+
+.dashboard-shortcuts a:last-child {
+    border-right: 0;
+}
+
+.dashboard-shortcuts a > i {
+    display: inline-flex;
+    width: 33px;
+    height: 33px;
+    flex: 0 0 33px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    color: #7e1723;
+    background: #fceef0;
+}
+
+.dashboard-shortcuts small {
+    color: #7c8799;
+    font-size: .7rem;
+    font-weight: 600;
+}
+
+.dashboard-shortcuts a:hover {
+    background: #fbfcfe;
+    color: #7e1723;
+}
+
+.dashboard-panel__footer-link {
+    display: block;
+    padding: .85rem 1.25rem;
+    border-top: 1px solid #edf0f5;
+    color: #7e1723;
+    font-size: .82rem;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+.dashboard-panel__footer-link i {
+    float: right;
+    margin-top: .2rem;
+}
+
+/* ── AUTH LAYOUT STYLES ── */
+.salu-auth-body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: #0b133d;
+    overflow-x: hidden;
+}
+
+.salu-ticker-bar {
+    position: relative;
+    background: linear-gradient(135deg, #700c11, #4a070a);
+    color: #ffffff;
+    padding: 0.5rem 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 100;
+}
+
+.salu-ticker-inner {
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+.salu-auth-viewport {
+    position: relative;
+    min-height: calc(100vh - 40px);
+}
+
+.salu-bg-pattern {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(135deg, #0b133d 0%, #1e295d 100%);
+    background-image: 
+        radial-gradient(rgba(212, 175, 55, 0.1) 1.5px, transparent 1.5px),
+        radial-gradient(rgba(255, 255, 255, 0.05) 1.5px, transparent 1.5px);
+    background-size: 30px 30px;
+    background-position: 0 0, 15px 15px;
+}
+
+.salu-bg-gate {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: #f8fafc;
+}
+
+.salu-curve-divider {
+    position: absolute;
+    left: 48%;
+    top: 0;
+    width: 100px;
+    height: 100%;
+    z-index: 1;
+}
+
+.salu-content-layer {
+    position: relative;
+    z-index: 2;
+}
+
+@media (max-width: 991.98px) {
+    .sidebar {
+        position: fixed;
+        z-index: 1030;
+        min-height: 100vh;
+        margin-left: -270px;
+    }
+
+    .sidebar.active {
+        margin-left: 0;
+    }
+
+    .dashboard-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .dashboard-shortcuts {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .dashboard-shortcuts a:nth-child(3) {
+        border-right: 0;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .container-fluid.mt-4 {
+        padding-right: 14px;
+        padding-left: 14px;
+    }
+
+    .navbar .ms-auto {
+        display: none;
+    }
+
+    .dashboard-hero {
+        align-items: flex-start;
+        flex-direction: column;
+        min-height: 0;
+        padding: 1.4rem;
+    }
+
+    .dashboard-hero__status,
+    .window-control {
+        width: 100%;
+    }
+
+    .dashboard-panel__header {
+        align-items: flex-start;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    .dashboard-table thead th,
+    .dashboard-table tbody td {
+        padding-right: .9rem;
+        padding-left: .9rem;
+    }
+
+    .dashboard-shortcuts {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-shortcuts a,
+    .dashboard-shortcuts a:nth-child(3) {
+        border-right: 0;
+        border-bottom: 1px solid #e9edf4;
+    }
+
+    .dashboard-shortcuts a:last-child {
+        border-bottom: 0;
+    }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SALU AUTHENTICATION - SINDHI AJRAK BLUE & CAMPUS GATE THEME
+   ══════════════════════════════════════════════════════════════ */
+
+.salu-auth-body {
+    margin: 0;
+    min-height: 100vh;
+    background-color: #07103a;
+    font-family: 'Inter', "Segoe UI", system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+}
+
+.salu-auth-viewport {
+    position: relative;
+    min-height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+/* UNIVERSITY CAMPUS BUILDING PHOTO BACKDROP */
+.salu-backdrop-gate {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    z-index: 1;
+}
+
+.salu-gate-right {
+    left: 0;
+    right: 0;
+    background-position: 80% 25%;
+    background-size: cover;
+}
+
+.salu-gate-left {
+    left: 0;
+    right: 0;
+    background-position: 15% 25%;
+    background-size: cover;
+}
+
+.salu-backdrop-gate::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(7, 16, 58, 0) 0%, rgba(7, 16, 58, 0.1) 60%, rgba(7, 16, 58, 0.85) 95%, #07103a 100%),
+                linear-gradient(to right, rgba(7, 16, 58, 0.2) 0%, transparent 40%);
+    pointer-events: none;
+}
+
+/* SINDHI AJRAK BLUE BACKDROP SVG */
+.salu-curve-backdrop-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* CONTENT LAYERS */
+.salu-auth-content {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 1.5rem 1rem;
+}
+
+/* LEFT-SIDE WRAPPER (LOGIN) */
+.salu-content-left .salu-card-wrapper {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 6%;
+}
+
+/* RIGHT-SIDE WRAPPER (REGISTRATION) */
+.salu-content-right .salu-card-wrapper-right {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 6%;
+}
+
+/* AUTHENTIC DEEP BLUE PREMIUM CARD */
+.salu-login-card {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    background: linear-gradient(180deg, #18265b 0%, #121e4a 100%);
+    border-radius: 32px;
+    border: 2px solid #2d418e;
+    box-shadow: 0 20px 55px rgba(2, 6, 26, 0.7), 0 0 0 1px rgba(255, 122, 0, 0.2);
+    padding: 2.65rem 2rem 1.4rem;
+    color: #ffffff;
+}
+
+.salu-signup-card {
+    max-width: 600px;
+    padding: 2.75rem 2.25rem 1.6rem;
+}
+
+/* PROTRUDING CIRCULAR SALU EMBLEM */
+.salu-crest-wrap {
+    position: absolute;
+    top: -42px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 84px;
+    height: 84px;
+    background: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+    border: 3px solid #f2994a;
+    z-index: 20;
+    overflow: hidden;
+}
+
+.salu-crest-img {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+}
+
+/* ROLE TAB BAR */
+.salu-role-bar {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 0.9rem;
+}
+
+.salu-role-tab {
+    padding: 0.4rem 1.4rem;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+}
+
+.salu-role-tab:first-child {
+    border-radius: 6px 0 0 6px;
+}
+
+.salu-role-tab:last-child {
+    border-radius: 0 6px 6px 0;
+}
+
+.salu-role-tab.active {
+    background: #f27220;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(242, 114, 32, 0.4);
+}
+
+.salu-role-tab:not(.active) {
+    background: #0b1436;
+    color: #8899c7;
+}
+
+.salu-role-tab:not(.active):hover {
+    background: #111c47;
+    color: #ffffff;
+}
+
+/* CARD HEADERS */
+.salu-card-title {
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.15rem;
+    letter-spacing: -0.01em;
+}
+
+.salu-card-subtitle {
+    text-align: center;
+    font-size: 0.8rem;
+    color: #8e9ec5;
+    margin-bottom: 1.1rem;
+}
+
+/* FORM ELEMENTS - UNDERLINE STYLE */
+.salu-field-group {
+    margin-bottom: 0.95rem;
+}
+
+.salu-label {
+    display: block;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #e2e8f0;
+    margin-bottom: 0.25rem;
+}
+
+.salu-input-box {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.salu-input-icon {
+    position: absolute;
+    left: 4px;
+    color: #7b8db9;
+    font-size: 0.95rem;
+    pointer-events: none;
+    transition: color 0.2s;
+}
+
+.salu-input {
+    width: 100%;
+    padding: 0.6rem 0.5rem 0.6rem 2.2rem;
+    border: none;
+    border-bottom: 1.5px solid #3c4f87;
+    border-radius: 0;
+    background: transparent;
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.salu-input:focus {
+    outline: none;
+    border-bottom-color: #f27220;
+    box-shadow: none;
+    color: #ffffff;
+}
+
+.salu-input::placeholder {
+    color: #6879a6;
+}
+
+.salu-input:focus ~ .salu-input-icon,
+.salu-input-box:focus-within .salu-input-icon {
+    color: #f27220;
+}
+
+.salu-eye-btn {
+    position: absolute;
+    right: 4px;
+    background: none;
+    border: none;
+    color: #7b8db9;
+    cursor: pointer;
+    padding: 0.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.salu-eye-btn:hover {
+    color: #f27220;
+}
+
+.salu-field-err {
+    display: block;
+    color: #f87171;
+    font-size: 0.74rem;
+    margin-top: 0.3rem;
+    font-weight: 600;
+}
+
+.salu-forgot-link {
+    color: #a5b4fc;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.salu-forgot-link:hover {
+    color: #f27220;
+    text-decoration: underline;
+}
+
+/* ORANGE SUBMIT BUTTON */
+.salu-btn-orange {
+    width: 68%;
+    min-width: 160px;
+    padding: 0.65rem 1.5rem;
+    background: #f27220;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.98rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(242, 114, 32, 0.45);
+    transition: all 0.2s ease;
+    letter-spacing: 0.02em;
+    display: inline-block;
+}
+
+.salu-btn-orange:hover {
+    background: #e06010;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(242, 114, 32, 0.6);
+    color: #ffffff;
+}
+
+/* PASSWORD METER */
+.salu-strength-bar {
+    height: 4px;
+    background: #27376b;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 0.35rem;
+}
+
+.salu-strength-fill {
+    height: 100%;
+    width: 0%;
+    transition: all 0.3s ease;
+    background: #ef4444;
+}
+
+.salu-strength-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-top: 0.2rem;
+    display: block;
+}
+
+.salu-match-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: 0.2rem;
+}
+
+/* CARD FOOTER */
+.salu-card-footer {
+    text-align: center;
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+}
+
+.salu-card-footer p {
+    color: #7384b0 !important;
+    font-size: 0.8rem;
+}
+
+.salu-register-link {
+    display: inline-block;
+    color: #8fa2d4;
+    font-weight: 600;
+    font-size: 0.82rem;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.salu-register-link:hover {
+    color: #f27220;
+    text-decoration: underline;
+}
+
+/* DEMO QUICK-LOGIN CREDENTIAL BOX */
+.demo-credentials-box {
+    background: #0f1a42;
+    border: 1px dashed #2d418e;
+    border-radius: 12px;
+    padding: 0.85rem;
+    margin: 1.25rem 0 0.5rem;
+}
+
+.demo-btn {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.35rem 0.65rem;
+    border-radius: 8px;
+    border: 1px solid #2d418e;
+    background: #192658;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.demo-btn:hover {
+    background: #f27220;
+    color: #ffffff;
+    border-color: #f27220;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 991.98px) {
+    .salu-content-left .salu-card-wrapper,
+    .salu-content-right .salu-card-wrapper-right {
+        justify-content: center;
+        padding: 1rem 0;
+    }
+
+    .salu-curve-backdrop-svg {
+        display: none;
+    }
+
+    .salu-backdrop-gate {
+        opacity: 0.2;
+    }
+
+    .salu-login-card,
+    .salu-signup-card {
+        max-width: 92%;
+        padding: 3rem 1.5rem 1.75rem;
+    }
+
+    .salu-btn-orange {
+        width: 100%;
+    }
+}
+
+
