@@ -1,0 +1,379 @@
+2026-08-25 11:07:21.851 +05:00 [INF] Starting SALU Exam Portal...
+2026-08-25 11:07:25.266 +05:00 [INF] Start installing Hangfire SQL objects...
+2026-08-25 11:07:29.233 +05:00 [INF] Hangfire SQL objects installed.
+2026-08-25 11:07:35.237 +05:00 [INF] Starting Hangfire Server using job storage: 'SQL Server: db64723.public.databaseasp.net@db64723'
+2026-08-25 11:07:35.242 +05:00 [INF] Using the following options for SQL Server job storage: Queue poll interval: 00:00:15.
+2026-08-25 11:07:35.243 +05:00 [INF] Using the following options for Hangfire Server:
+    Worker count: 5
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2026-08-25 11:07:35.743 +05:00 [INF] Server saluexamportal-hangfire:5172:8e7b6573 successfully announced in 437.8462 ms
+2026-08-25 11:07:35.756 +05:00 [INF] Server saluexamportal-hangfire:5172:8e7b6573 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, SqlServerHeartbeatProcess, ExpirationManager, CountersAggregator, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2026-08-25 11:07:35.930 +05:00 [INF] Server saluexamportal-hangfire:5172:8e7b6573 all the dispatchers started
+2026-08-25 11:07:36.046 +05:00 [INF] 2 servers were removed due to timeout
+2026-08-25 11:07:39.029 +05:00 [INF] HTTP GET /Auth/SignIn responded 200 in 940.7884 ms
+2026-08-25 21:09:26.322 +05:00 [INF] Starting SALU Exam Portal...
+2026-08-25 21:09:26.901 +05:00 [FTL] Application terminated unexpectedly
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.WebApplicationBuilder.Build()
+   at Program.<Main>$(String[] args) in D:\SaluExamPortal\SaluExamPortal\Program.cs:line 315
+2026-08-25 21:09:45.192 +05:00 [INF] Starting SALU Exam Portal...
+2026-08-25 21:09:45.327 +05:00 [FTL] Application terminated unexpectedly
+System.InvalidOperationException: ConnectionStrings:DefaultConnection must be configured via environment variables or user secrets.
+   at Program.<Main>$(String[] args) in D:\SaluExamPortal\SaluExamPortal\Program.cs:line 94
+2026-08-25 21:10:38.633 +05:00 [INF] Starting SALU Exam Portal...
+2026-08-25 21:10:38.800 +05:00 [FTL] Application terminated unexpectedly
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.WebApplicationBuilder.Build()
+   at Program.<Main>$(String[] args) in D:\SaluExamPortal\SaluExamPortal\Program.cs:line 315
+2026-08-25 21:11:35.064 +05:00 [INF] Starting SALU Exam Portal...
+2026-08-25 21:11:35.230 +05:00 [FTL] Application terminated unexpectedly
+Microsoft.Extensions.Hosting.HostAbortedException: The host was aborted.
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.ThrowHostAborted()
+   at Microsoft.Extensions.Hosting.HostFactoryResolver.HostingListener.OnNext(KeyValuePair`2 value)
+   at System.Diagnostics.DiagnosticListener.Write(String name, Object value)
+   at Microsoft.Extensions.Hosting.HostBuilder.ResolveHost(IServiceProvider serviceProvider, DiagnosticListener diagnosticListener)
+   at Microsoft.Extensions.Hosting.HostApplicationBuilder.Build()
+   at Microsoft.AspNetCore.Builder.WebApplicationBuilder.Build()
+   at Program.<Main>$(String[] args) in D:\SaluExamPortal\SaluExamPortal\Program.cs:line 315
+2026-08-25 21:15:18.242 +05:00 [INF] Starting SALU Exam Portal...
+2026-08-25 21:20:13.001 +05:00 [INF] Starting SALU Exam Portal...
+2026-08-25 21:21:51.402 +05:00 [INF] Starting SALU Exam Portal...
+2026-08-25 21:21:51.922 +05:00 [INF] Start installing Hangfire SQL objects...
+2026-08-25 21:21:56.154 +05:00 [INF] Hangfire SQL objects installed.
+2026-08-25 21:21:57.390 +05:00 [INF] Starting Hangfire Server using job storage: 'SQL Server: sql5110.site4now.net@db_acda7f_indussoftware'
+2026-08-25 21:21:57.390 +05:00 [INF] Using the following options for SQL Server job storage: Queue poll interval: 00:00:15.
+2026-08-25 21:21:57.391 +05:00 [INF] Using the following options for Hangfire Server:
+    Worker count: 5
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2026-08-25 21:21:57.996 +05:00 [INF] Server saluexamportal-hangfire:13276:9bc04784 successfully announced in 580.5669 ms
+2026-08-25 21:21:58.001 +05:00 [INF] Server saluexamportal-hangfire:13276:9bc04784 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, SqlServerHeartbeatProcess, ExpirationManager, CountersAggregator, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2026-08-25 21:21:58.006 +05:00 [INF] Server saluexamportal-hangfire:13276:9bc04784 all the dispatchers started
+2026-08-25 21:22:42.684 +05:00 [INF] Starting SALU Exam Portal...
+2026-08-25 21:22:42.935 +05:00 [INF] Start installing Hangfire SQL objects...
+2026-08-25 21:22:48.354 +05:00 [INF] Hangfire SQL objects installed.
+2026-08-25 21:22:49.384 +05:00 [INF] Applying configured EF Core migrations during startup.
+2026-08-25 21:23:05.762 +05:00 [INF] Starting database seeding...
+2026-08-25 21:23:10.617 +05:00 [INF] Seeding districts...
+2026-08-25 21:23:11.782 +05:00 [INF] District seed/upsert completed.
+2026-08-25 21:23:11.787 +05:00 [INF] Seeding colleges...
+2026-08-25 21:23:18.160 +05:00 [INF] College seed/upsert completed.
+2026-08-25 21:23:18.164 +05:00 [INF] Seeding College Administrator accounts for all colleges...
+2026-08-25 21:24:22.717 +05:00 [INF] College Administrator accounts seeded successfully.
+2026-08-25 21:24:22.719 +05:00 [INF] Seeding programs...
+2026-08-25 21:24:24.788 +05:00 [INF] Program seed/upsert completed.
+2026-08-25 21:24:29.782 +05:00 [INF] Seeded 280 examination subjects.
+2026-08-25 21:24:30.155 +05:00 [INF] Seeding academic years...
+2026-08-25 21:24:30.728 +05:00 [INF] Seeded 2 academic years.
+2026-08-25 21:24:30.730 +05:00 [INF] Seeding college programs...
+2026-08-25 21:24:35.152 +05:00 [INF] Seeded 229 new college program links.
+2026-08-25 21:24:35.153 +05:00 [INF] Seeding seat allocations...
+2026-08-25 21:24:42.724 +05:00 [INF] Seeded 229 new seat allocations.
+2026-08-25 21:24:43.195 +05:00 [INF] Seeding fees slabs...
+2026-08-25 21:24:47.983 +05:00 [INF] Seeded 112 fees slabs.
+2026-08-25 21:24:49.817 +05:00 [INF] Ensuring open enrollment window and 8140 PKR fees...
+2026-08-25 21:24:52.551 +05:00 [ERR] Failed executing DbCommand (336ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [f].[Id], [f].[Amount], [f].[ChallanNumber], [f].[CreatedAt], [f].[DueDate], [f].[EnrollmentId], [f].[ExamFormId], [f].[FeesSlabId], [f].[PaidAt], [f].[PaidByUserId], [f].[PaymentMethod], [f].[PaymentProofUrl], [f].[Status], [f].[TransactionReference], [f].[Type], [f].[UpdatedAt]
+FROM [fees] AS [f]
+2026-08-25 21:24:52.567 +05:00 [ERR] An exception occurred while iterating over the results of a query for context type 'SaluExamPortal.Data.ApplicationDbContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'PaidByUserId'.
+Invalid column name 'PaymentMethod'.
+Invalid column name 'PaymentProofUrl'.
+Invalid column name 'TransactionReference'.
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:718b871c-ee0e-470a-a461-d671eefc64a0
+Error Number:207,State:1,Class:16
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'PaidByUserId'.
+Invalid column name 'PaymentMethod'.
+Invalid column name 'PaymentProofUrl'.
+Invalid column name 'TransactionReference'.
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:718b871c-ee0e-470a-a461-d671eefc64a0
+Error Number:207,State:1,Class:16
+2026-08-25 21:24:52.569 +05:00 [ERR] An error occurred during database seeding.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'PaidByUserId'.
+Invalid column name 'PaymentMethod'.
+Invalid column name 'PaymentProofUrl'.
+Invalid column name 'TransactionReference'.
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.EnsureActiveEnrollmentWindowAndFeesAsync() in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 629
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.SeedAsync(Int32 studentCount, Boolean seedReferenceData) in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 41
+ClientConnectionId:718b871c-ee0e-470a-a461-d671eefc64a0
+Error Number:207,State:1,Class:16
+2026-08-25 21:24:52.950 +05:00 [FTL] Database initialization failed. Verify the SQL Server connection and migration state.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'PaidByUserId'.
+Invalid column name 'PaymentMethod'.
+Invalid column name 'PaymentProofUrl'.
+Invalid column name 'TransactionReference'.
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.EnsureActiveEnrollmentWindowAndFeesAsync() in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 629
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.SeedAsync(Int32 studentCount, Boolean seedReferenceData) in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 41
+   at Program.<Main>$(String[] args) in D:\SaluExamPortal\SaluExamPortal\Program.cs:line 403
+ClientConnectionId:718b871c-ee0e-470a-a461-d671eefc64a0
+Error Number:207,State:1,Class:16
+2026-08-25 21:24:52.955 +05:00 [FTL] Application terminated unexpectedly
+Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'PaidByUserId'.
+Invalid column name 'PaymentMethod'.
+Invalid column name 'PaymentProofUrl'.
+Invalid column name 'TransactionReference'.
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.EnsureActiveEnrollmentWindowAndFeesAsync() in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 629
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.SeedAsync(Int32 studentCount, Boolean seedReferenceData) in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 41
+   at Program.<Main>$(String[] args) in D:\SaluExamPortal\SaluExamPortal\Program.cs:line 403
+ClientConnectionId:718b871c-ee0e-470a-a461-d671eefc64a0
+Error Number:207,State:1,Class:16
+2026-08-25 21:26:36.425 +05:00 [INF] Starting SALU Exam Portal...
+2026-08-25 21:26:36.630 +05:00 [INF] Start installing Hangfire SQL objects...
+2026-08-25 21:26:40.789 +05:00 [INF] Hangfire SQL objects installed.
+2026-08-25 21:26:41.346 +05:00 [INF] Applying configured EF Core migrations during startup.
+2026-08-25 21:26:49.706 +05:00 [INF] Starting database seeding...
+2026-08-25 21:26:54.929 +05:00 [INF] Seeding districts...
+2026-08-25 21:26:55.407 +05:00 [INF] District seed/upsert completed.
+2026-08-25 21:26:55.408 +05:00 [INF] Seeding colleges...
+2026-08-25 21:26:56.377 +05:00 [INF] College seed/upsert completed.
+2026-08-25 21:26:56.379 +05:00 [INF] Seeding College Administrator accounts for all colleges...
+2026-08-25 21:27:57.024 +05:00 [ERR] Failed executing DbCommand (32,954ms) [Parameters=[@email='?' (Size = 255), @_8__locals1_college_Id='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[Cnic], [u].[CollegeId], [u].[CreatedAt], [u].[Email], [u].[FatherName], [u].[FullName], [u].[IsVerified], [u].[Password], [u].[PasswordResetTokenExpiresAt], [u].[PasswordResetTokenHash], [u].[Phone], [u].[Role], [u].[UpdatedAt], [u].[VerificationCode]
+FROM [users] AS [u]
+WHERE [u].[Email] = @email OR [u].[CollegeId] = @_8__locals1_college_Id
+2026-08-25 21:27:57.041 +05:00 [ERR] An exception occurred while iterating over the results of a query for context type 'SaluExamPortal.Data.ApplicationDbContext'.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:967522fe-4d9e-4f94-8ef7-e7c480497b38
+Error Number:-2,State:0,Class:11
+Microsoft.Data.SqlClient.SqlException (0x80131904): Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+ClientConnectionId:967522fe-4d9e-4f94-8ef7-e7c480497b38
+Error Number:-2,State:0,Class:11
+2026-08-25 21:27:57.043 +05:00 [ERR] An error occurred during database seeding.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.SeedCollegeAccountsAsync() in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 323
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.SeedReferenceDataAsync() in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 56
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.SeedAsync(Int32 studentCount, Boolean seedReferenceData) in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 33
+ClientConnectionId:967522fe-4d9e-4f94-8ef7-e7c480497b38
+Error Number:-2,State:0,Class:11
+2026-08-25 21:27:57.057 +05:00 [FTL] Database initialization failed. Verify the SQL Server connection and migration state.
+Microsoft.Data.SqlClient.SqlException (0x80131904): Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.SeedCollegeAccountsAsync() in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 323
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.SeedReferenceDataAsync() in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 56
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.SeedAsync(Int32 studentCount, Boolean seedReferenceData) in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 33
+   at Program.<Main>$(String[] args) in D:\SaluExamPortal\SaluExamPortal\Program.cs:line 403
+ClientConnectionId:967522fe-4d9e-4f94-8ef7-e7c480497b38
+Error Number:-2,State:0,Class:11
+2026-08-25 21:27:57.061 +05:00 [FTL] Application terminated unexpectedly
+Microsoft.Data.SqlClient.SqlException (0x80131904): Execution Timeout Expired.  The timeout period elapsed prior to completion of the operation or the server is not responding.
+ ---> System.ComponentModel.Win32Exception (258): The wait operation timed out.
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.<>c__DisplayClass30_0`2.<<ExecuteAsync>b__0>d.MoveNext()
+--- End of stack trace from previous location ---
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteImplementationAsync[TState,TResult](Func`4 operation, Func`4 verifySucceeded, TState state, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.ExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.SeedCollegeAccountsAsync() in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 323
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.SeedReferenceDataAsync() in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 56
+   at SaluExamPortal.Data.Seeders.DatabaseSeeder.SeedAsync(Int32 studentCount, Boolean seedReferenceData) in D:\SaluExamPortal\SaluExamPortal\Data\Seeders\DatabaseSeeder.cs:line 33
+   at Program.<Main>$(String[] args) in D:\SaluExamPortal\SaluExamPortal\Program.cs:line 403
+ClientConnectionId:967522fe-4d9e-4f94-8ef7-e7c480497b38
+Error Number:-2,State:0,Class:11
+2026-08-25 21:29:58.443 +05:00 [INF] Starting SALU Exam Portal...
+2026-08-25 21:29:58.737 +05:00 [INF] Start installing Hangfire SQL objects...
+2026-08-25 21:30:05.950 +05:00 [INF] Hangfire SQL objects installed.
+2026-08-25 21:30:07.890 +05:00 [INF] Applying configured EF Core migrations during startup.
+2026-08-25 21:30:17.547 +05:00 [INF] Starting database seeding...
+2026-08-25 21:30:22.160 +05:00 [INF] Seeding districts...
+2026-08-25 21:30:22.758 +05:00 [INF] District seed/upsert completed.
+2026-08-25 21:30:22.760 +05:00 [INF] Seeding colleges...
+2026-08-25 21:30:25.655 +05:00 [INF] College seed/upsert completed.
+2026-08-25 21:30:25.667 +05:00 [INF] Seeding College Administrator accounts for all colleges...
+2026-08-25 21:30:37.547 +05:00 [INF] College Administrator accounts seeded successfully.
+2026-08-25 21:30:37.549 +05:00 [INF] Seeding programs...
+2026-08-25 21:30:43.114 +05:00 [INF] Program seed/upsert completed.
+2026-08-25 21:30:44.311 +05:00 [INF] Seeding college programs...
+2026-08-25 21:30:46.612 +05:00 [INF] Seeded 0 new college program links.
+2026-08-25 21:30:46.623 +05:00 [INF] Seeding seat allocations...
+2026-08-25 21:30:47.722 +05:00 [INF] Seeded 0 new seat allocations.
+2026-08-25 21:30:50.221 +05:00 [INF] Ensuring open enrollment window and 8140 PKR fees...
+2026-08-25 21:30:54.766 +05:00 [INF] Enrollment window opened for 1 month and fees set to 8140 PKR.
+2026-08-25 21:30:54.766 +05:00 [INF] Database seeding completed successfully.
+2026-08-25 21:30:54.766 +05:00 [INF] Ensuring open enrollment window and 8140 PKR fees...
+2026-08-25 21:31:01.569 +05:00 [INF] Enrollment window opened for 1 month and fees set to 8140 PKR.
+2026-08-25 21:31:01.680 +05:00 [INF] Starting Hangfire Server using job storage: 'SQL Server: sql5110.site4now.net@db_acda7f_indussoftware'
+2026-08-25 21:31:01.681 +05:00 [INF] Using the following options for SQL Server job storage: Queue poll interval: 00:00:15.
+2026-08-25 21:31:01.681 +05:00 [INF] Using the following options for Hangfire Server:
+    Worker count: 5
+    Listening queues: 'default'
+    Shutdown timeout: 00:00:15
+    Schedule polling interval: 00:00:15
+2026-08-25 21:31:02.910 +05:00 [INF] Server saluexamportal-hangfire:10552:c707c976 successfully announced in 1218.9401 ms
+2026-08-25 21:31:02.915 +05:00 [INF] Server saluexamportal-hangfire:10552:c707c976 is starting the registered dispatchers: ServerWatchdog, ServerJobCancellationWatcher, SqlServerHeartbeatProcess, ExpirationManager, CountersAggregator, Worker, DelayedJobScheduler, RecurringJobScheduler...
+2026-08-25 21:31:02.942 +05:00 [INF] Server saluexamportal-hangfire:10552:c707c976 all the dispatchers started
+2026-08-25 21:31:03.561 +05:00 [INF] 1 servers were removed due to timeout
+2026-08-25 21:40:22.986 +05:00 [INF] Starting SALU Exam Portal...
+2026-08-25 22:00:27.104 +05:00 [INF] Starting SALU Exam Portal...
+2026-08-25 22:00:28.966 +05:00 [INF] Starting SALU Exam Portal...
