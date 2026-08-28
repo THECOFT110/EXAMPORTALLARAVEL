@@ -129,4 +129,13 @@ class AuthTest extends TestCase
         $response->assertStatus(200)
             ->assertSee('SuperAdmin Control Center');
     }
+
+    public function test_college_admin_can_render_admin_dashboard_view(): void
+    {
+        $collegeAdmin = User::where('role', 'COLLEGE_ADMIN')->first();
+
+        $response = $this->actingAs($collegeAdmin, 'web')->get(route('admin.dashboard'));
+        $response->assertStatus(200)
+            ->assertSee('College Operations Center');
+    }
 }

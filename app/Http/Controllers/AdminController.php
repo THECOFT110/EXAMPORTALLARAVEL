@@ -70,17 +70,17 @@ class AdminController extends Controller
         }
 
         if ($request->filled('program')) {
-            $query->where('program', 'like', '%'.$request->program.'%');
+            $query->where('program', 'ilike', '%'.$request->program.'%');
         }
 
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->whereHas('user', function ($uq) use ($search) {
-                    $uq->where('full_name', 'like', '%'.$search.'%')
-                        ->orWhere('cnic', 'like', '%'.$search.'%')
-                        ->orWhere('email', 'like', '%'.$search.'%');
-                })->orWhere('roll_number', 'like', '%'.$search.'%');
+                    $uq->where('full_name', 'ilike', '%'.$search.'%')
+                        ->orWhere('cnic', 'ilike', '%'.$search.'%')
+                        ->orWhere('email', 'ilike', '%'.$search.'%');
+                })->orWhere('roll_number', 'ilike', '%'.$search.'%');
             });
         }
 
@@ -202,14 +202,7 @@ class AdminController extends Controller
     {
         $enrollment = Enrollment::with('user')->findOrFail($id);
 
-        $enrollment->status = 'APPROVED';
-        $enrollment->rejection_reason = null;
-
-        if (empty($enrollment->roll_number)) {
-            $enrollment->roll_number = $enrollment->generateRollNumber();
-        }
-
-        $enrollment->save();
+        $enrollment->approveWithRollNumber();
 
         AuditLog::log(
             $request->user()->id,
@@ -272,16 +265,9 @@ class AdminController extends Controller
         ]);
 
         $enrollments = Enrollment::with('user')->whereIn('id', $validated['ids'])->get();
-        $baseCount = Enrollment::where('status', 'APPROVED')->count();
 
-        foreach ($enrollments as $index => $enrollment) {
-            $enrollment->status = 'APPROVED';
-            if (empty($enrollment->roll_number)) {
-                $year = now()->format('y');
-                $count = $baseCount + $index + 1;
-                $enrollment->roll_number = "SALU-{$year}-".str_pad($count, 5, '0', STR_PAD_LEFT);
-            }
-            $enrollment->save();
+        foreach ($enrollments as $enrollment) {
+            $enrollment->approveWithRollNumber();
 
             SendEnrollmentNotificationJob::dispatch($enrollment, 'approved');
         }
@@ -348,9 +334,9 @@ class AdminController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('full_name', 'like', '%'.$search.'%')
-                    ->orWhere('email', 'like', '%'.$search.'%')
-                    ->orWhere('cnic', 'like', '%'.$search.'%');
+                $q->where('full_name', 'ilike', '%'.$search.'%')
+                    ->orWhere('email', 'ilike', '%'.$search.'%')
+                    ->orWhere('cnic', 'ilike', '%'.$search.'%');
             });
         }
 
@@ -394,7 +380,7 @@ class AdminController extends Controller
         $query = AuditLog::with('user');
 
         if ($request->filled('action')) {
-            $query->where('action', 'like', '%'.$request->action.'%');
+            $query->where('action', 'ilike', '%'.$request->action.'%');
         }
 
         $page = $request->get('page', 1);
@@ -550,14 +536,210 @@ class AdminController extends Controller
      */
     public function updateSettings(Request $request)
     {
-        $updates = $request->all();
+        $updates = SystemSetting::validateUpdates($request->except(['_token', '_method']));
 
         foreach ($updates as $key => $value) {
-            SystemSetting::set($key, $value);
+            SystemSetting::set($key, (string) $value);
         }
 
         return response()->json([
             'message' => 'Settings updated.',
         ]);
+    }
+
+    /**
+     * Web Admin Dashboard
+     */
+    public function webDashboard(Request $request)
+    {
+        $user = $request->user();
+        $isCollegeAdmin = $user->role === 'COLLEGE_ADMIN';
+        $collegeId = $user->college_id;
+        $collegeName = $user->college?->name ?? 'Main Campus';
+
+        $enrollmentsQuery = Enrollment::query();
+        if ($isCollegeAdmin && $collegeId) {
+            $enrollmentsQuery->where('college_id', $collegeId);
+        }
+
+        $totalEnrollments = (clone $enrollmentsQuery)->count();
+        $pendingEnrollments = (clone $enrollmentsQuery)->where('status', 'PENDING')->count();
+        $approvedEnrollments = (clone $enrollmentsQuery)->where('status', 'APPROVED')->count();
+        $rejectedEnrollments = (clone $enrollmentsQuery)->where('status', 'REJECTED')->count();
+
+        $maleApprovedCount = (clone $enrollmentsQuery)->where('status', 'APPROVED')->where('gender', 'MALE')->count();
+        $femaleApprovedCount = (clone $enrollmentsQuery)->where('status', 'APPROVED')->where('gender', 'FEMALE')->count();
+
+        $totalStudents = $isCollegeAdmin && $collegeId
+            ? \App\Models\User::where('role', 'STUDENT')->where('college_id', $collegeId)->count()
+            : \App\Models\User::where('role', 'STUDENT')->count();
+
+        $totalColleges = \App\Models\College::where('is_active', true)->count();
+        $totalPrograms = (clone $enrollmentsQuery)->distinct('program')->count('program');
+        if ($totalPrograms === 0) {
+            $totalPrograms = 12;
+        }
+
+        $submittedExamForms = (clone $enrollmentsQuery)->whereIn('status', ['APPROVED', 'PENDING'])->count();
+
+        $paidFeesCount = Fee::whereIn('status', ['PAID', 'VERIFIED'])->count();
+        $unpaidFeesCount = Fee::where('status', 'UNPAID')->count();
+        $totalRevenue = Fee::whereIn('status', ['PAID', 'VERIFIED'])->sum('amount');
+        $recentEnrollments = (clone $enrollmentsQuery)->with(['user', 'college'])->latest()->take(5)->get();
+        $activeWindow = EnrollmentWindow::with('academicYear')->where('is_open', true)->first();
+        $isExamWindowOpen = $activeWindow ? true : false;
+        $activeYearId = $activeWindow?->academic_year_id ?? \App\Models\AcademicYear::where('is_active', true)->first()?->id ?? \App\Models\AcademicYear::latest()->first()?->id;
+
+        return view('admin.dashboard', compact(
+            'totalEnrollments', 'pendingEnrollments', 'approvedEnrollments', 'rejectedEnrollments',
+            'totalStudents', 'totalColleges', 'totalPrograms', 'submittedExamForms',
+            'paidFeesCount', 'unpaidFeesCount', 'totalRevenue',
+            'recentEnrollments', 'activeWindow', 'isCollegeAdmin', 'isExamWindowOpen',
+            'collegeName', 'collegeId', 'activeYearId', 'maleApprovedCount', 'femaleApprovedCount'
+        ));
+    }
+
+    /**
+     * Web approve enrollment
+     */
+    public function webApproveEnrollment(Request $request, string $id)
+    {
+        $enrollment = Enrollment::with('user')->findOrFail($id);
+        $this->authorize('approve', $enrollment);
+        $enrollment->approveWithRollNumber();
+
+        \App\Jobs\SendEnrollmentNotificationJob::dispatch($enrollment, 'approved');
+        AuditLog::log(auth()->id(), 'APPROVE_ENROLLMENT', 'Enrollment', $id, "Approved roll: {$enrollment->roll_number}", $request->ip());
+
+        return back()->with('success', "Enrollment approved! Assigned roll number: {$enrollment->roll_number}");
+    }
+
+    /**
+     * Web reject enrollment
+     */
+    public function webRejectEnrollment(Request $request, string $id)
+    {
+        $enrollment = Enrollment::with('user')->findOrFail($id);
+        $this->authorize('reject', $enrollment);
+        $enrollment->status = 'REJECTED';
+        $enrollment->rejection_reason = $request->input('reason', 'Application rejected by administration');
+        $enrollment->save();
+
+        \App\Jobs\SendEnrollmentNotificationJob::dispatch($enrollment, 'rejected');
+        AuditLog::log(auth()->id(), 'REJECT_ENROLLMENT', 'Enrollment', $id, "Reason: {$enrollment->rejection_reason}", $request->ip());
+
+        return back()->with('success', 'Enrollment application rejected.');
+    }
+
+    /**
+     * Web list enrollments
+     */
+    public function webEnrollments(Request $request)
+    {
+        $user = $request->user();
+        $query = Enrollment::with(['user', 'academicYear', 'college'])->latest();
+
+        if ($user->role === 'COLLEGE_ADMIN' && $user->college_id) {
+            $query->where('college_id', $user->college_id);
+        }
+
+        $enrollments = $query->paginate(20);
+        return view('admin.enrollments', compact('enrollments'));
+    }
+
+    /**
+     * Web enrollment details
+     */
+    public function webEnrollmentDetails(Request $request, string $id)
+    {
+        $enrollment = Enrollment::with(['user', 'academicYear', 'college', 'fees', 'seat', 'admitCard', 'results'])->findOrFail($id);
+        $this->authorize('view', $enrollment);
+        return view('admin.enrollment-details', compact('id', 'enrollment'));
+    }
+
+    /**
+     * Web students list
+     */
+    public function webStudents(Request $request)
+    {
+        $user = $request->user();
+        $query = \App\Models\User::where('role', 'STUDENT')->with('college')->latest();
+
+        if ($user->role === 'COLLEGE_ADMIN' && $user->college_id) {
+            $query->where('college_id', $user->college_id);
+        }
+
+        $students = $query->paginate(20);
+        return view('admin.students', compact('students'));
+    }
+
+    /**
+     * Web colleges list
+     */
+    public function webColleges(Request $request)
+    {
+        $colleges = \App\Models\College::latest()->paginate(20);
+        return view('admin.colleges', compact('colleges'));
+    }
+
+    /**
+     * Web college create form
+     */
+    public function webCollegeCreate(Request $request)
+    {
+        return view('admin.college-create');
+    }
+
+    /**
+     * Web college edit form
+     */
+    public function webCollegeEdit(Request $request, string $id)
+    {
+        $college = \App\Models\College::findOrFail($id);
+        return view('admin.college-edit', compact('id', 'college'));
+    }
+
+    /**
+     * Web academic years list
+     */
+    public function webAcademicYears(Request $request)
+    {
+        $years = \App\Models\AcademicYear::with('enrollmentWindow')->orderByDesc('start_date')->get();
+        return view('admin.academic-years', compact('years'));
+    }
+
+    /**
+     * Web fees list
+     */
+    public function webFees(Request $request)
+    {
+        $fees = Fee::with(['enrollment.user'])->latest()->paginate(20);
+        return view('admin.fees', compact('fees'));
+    }
+
+    /**
+     * Web fee verification queue
+     */
+    public function webFeeVerification(Request $request)
+    {
+        $fees = Fee::with(['enrollment.user'])->whereIn('status', ['PENDING_VERIFICATION', 'PAID', 'UNPAID'])->latest()->paginate(20);
+        return view('admin.fees', compact('fees'));
+    }
+
+    /**
+     * Web reports view
+     */
+    public function webReports(Request $request)
+    {
+        return view('admin.reports');
+    }
+
+    /**
+     * Web audit logs view
+     */
+    public function webAuditLogs(Request $request)
+    {
+        $logs = AuditLog::with('user')->latest()->paginate(50);
+        return view('admin.audit-logs', compact('logs'));
     }
 }

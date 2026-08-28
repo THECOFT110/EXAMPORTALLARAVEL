@@ -257,4 +257,161 @@ class EnrollmentController extends Controller
 
         return response()->json($programs);
     }
+
+    /**
+     * Web Enrollment create wizard view
+     */
+    public function webCreate()
+    {
+        $activeYear = \App\Models\AcademicYear::where('is_active', true)->first();
+        $colleges = \App\Models\College::where('is_active', true)->get();
+        $collegeMap = $colleges->keyBy('name');
+
+        $csvPath = base_path('college-program-list.csv');
+        $districtCollegeProgramData = [];
+
+        if (file_exists($csvPath)) {
+            $file = fopen($csvPath, 'r');
+            $header = fgetcsv($file);
+            while (($row = fgetcsv($file)) !== false) {
+                if (count($row) < 3) continue;
+                $district = trim($row[0]);
+                $collegeName = trim($row[1]);
+                $rawPrograms = trim($row[2]);
+                $programs = array_values(array_filter(array_map('trim', explode(',', $rawPrograms))));
+
+                if (empty($district) || empty($collegeName)) continue;
+
+                if (! isset($districtCollegeProgramData[$district])) {
+                    $districtCollegeProgramData[$district] = [];
+                }
+
+                $collegeModel = $collegeMap->get($collegeName);
+
+                $districtCollegeProgramData[$district][] = [
+                    'id' => $collegeModel ? $collegeModel->id : '',
+                    'name' => $collegeName,
+                    'programs' => $programs,
+                ];
+            }
+            fclose($file);
+        }
+
+        return view('enrollment.create', compact('activeYear', 'colleges', 'districtCollegeProgramData'));
+    }
+
+    /**
+     * Web Enrollment submission handler
+     */
+    public function webStore(\App\Http\Requests\StoreEnrollmentRequest $request, \App\Services\FileUploadService $fileUploadService)
+    {
+        $user = $request->user();
+        $activeYear = \App\Models\AcademicYear::where('is_active', true)->first() ?? \App\Models\AcademicYear::latest()->first();
+        $validated = $request->validated();
+
+        $photoUrl = null;
+        if ($request->hasFile('photo')) {
+            $photoUrl = $fileUploadService->uploadStudentPhoto($request->file('photo'), $user->id);
+        }
+
+        $matricRecord = [
+            'level' => 'Matric / SSC',
+            'group' => $request->input('matric_group', 'Science'),
+            'board' => $request->input('matric_board', 'BISE Sukkur'),
+            'passing_year' => $request->input('matric_passing_year', '2022'),
+            'roll_no' => $request->input('matric_roll_no', ''),
+            'total_marks' => (int) $request->input('matric_total_marks', 1100),
+            'obtained_marks' => (int) $request->input('matric_obtained_marks', 0),
+            'percentage' => $request->input('matric_percentage', '0%'),
+            'grade' => $request->input('matric_grade', 'A-1'),
+        ];
+
+        $interRecord = [
+            'level' => 'Intermediate / HSC',
+            'group' => $request->input('inter_group', 'Pre-Engineering'),
+            'board' => $request->input('inter_board', $request->input('name_of_board', 'BISE Sukkur')),
+            'passing_year' => $request->input('inter_passing_year', $request->input('passing_year', '2024')),
+            'roll_no' => $request->input('inter_roll_no', ''),
+            'total_marks' => (int) $request->input('inter_total_marks', 1100),
+            'obtained_marks' => (int) $request->input('inter_obtained_marks', 0),
+            'percentage' => $request->input('inter_percentage', '0%'),
+            'grade' => $request->input('inter_grade', $request->input('division_obtained', 'A-1')),
+        ];
+
+        $academicRecords = [$matricRecord, $interRecord];
+
+        $documents = [];
+        if ($request->hasFile('doc_cnic')) {
+            $documents['cnic'] = $fileUploadService->uploadDocument($request->file('doc_cnic'), $user->id, 'cnic');
+        }
+        if ($request->hasFile('doc_matric')) {
+            $documents['matric'] = $fileUploadService->uploadDocument($request->file('doc_matric'), $user->id, 'matric');
+        }
+        if ($request->hasFile('doc_inter')) {
+            $documents['intermediate'] = $fileUploadService->uploadDocument($request->file('doc_inter'), $user->id, 'intermediate');
+        }
+
+        $enrollment = Enrollment::create([
+            'user_id' => $user->id,
+            'academic_year_id' => $activeYear?->id,
+            'college_id' => $validated['college_id'] ?? null,
+            'program' => $validated['program'],
+            'session' => $validated['session'] ?? now()->format('Y') . '-' . (now()->year + 4),
+            'semester' => $validated['semester'] ?? '1',
+            'father_name' => $validated['father_name'],
+            'surname' => $validated['surname'] ?? null,
+            'so_do_wo' => $validated['so_do_wo'] ?? null,
+            'dob' => $validated['dob'] ?? now()->subYears(18)->toDateString(),
+            'gender' => $validated['gender'],
+            'address' => $validated['address'],
+            'city' => $validated['city'] ?? null,
+            'contact_number' => $validated['contact_number'] ?? $user->phone,
+            'postal_address' => $validated['postal_address'] ?? null,
+            'passing_year' => $interRecord['passing_year'] ?? $validated['passing_year'] ?? null,
+            'division_obtained' => $interRecord['grade'] ?? $validated['division_obtained'] ?? null,
+            'name_of_board' => $interRecord['board'] ?? $validated['name_of_board'] ?? null,
+            'nationality' => $validated['nationality'] ?? 'Pakistani',
+            'religion' => $validated['religion'] ?? 'Islam',
+            'domicile_province' => $validated['domicile_province'] ?? 'Sindh',
+            'domicile_district' => $validated['domicile_district'] ?? null,
+            'academic_records' => $academicRecords,
+            'documents' => $documents,
+            'photo_url' => $photoUrl,
+            'status' => 'PENDING',
+        ]);
+
+        Fee::create([
+            'enrollment_id' => $enrollment->id,
+            'challan_number' => Fee::generateChallanNumber(),
+            'amount' => 1500.00,
+            'status' => 'UNPAID',
+            'due_date' => now()->addDays(7),
+        ]);
+
+        return redirect()->route('student.dashboard')->with('success', 'Enrollment application submitted successfully! Please proceed to fee payment.');
+    }
+
+    /**
+     * Web Enrollment card view
+     */
+    public function webCard(Request $request)
+    {
+        $user = $request->user();
+        $enrollments = Enrollment::where('user_id', $user->id)->with('college')->get();
+
+        return view('student.enrollments', compact('enrollments'));
+    }
+
+    /**
+     * Web Enrollment details view
+     */
+    public function webShow(Request $request, string $id)
+    {
+        $enrollment = Enrollment::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->with(['user', 'academicYear', 'college', 'fees', 'seat', 'admitCard', 'results'])
+            ->firstOrFail();
+
+        return view('student.enrollment-details', compact('id', 'enrollment'));
+    }
 }

@@ -24,15 +24,15 @@ use Illuminate\Support\Facades\Route;
 // Public routes
 Route::get('/health', fn() => response()->json(['status' => 'ok', 'timestamp' => now()]));
 
-// Authentication routes (public)
+// Authentication routes (public with rate limiting)
 Route::prefix('auth')->group(function () {
-    Route::get('/check-email', [AuthController::class, 'checkEmail']);
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/recover-email', [AuthController::class, 'recoverEmail']);
-    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-    Route::post('/verify-reset-token', [AuthController::class, 'verifyResetToken']);
+    Route::get('/check-email', [AuthController::class, 'checkEmail'])->middleware('throttle:30,1');
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
+    Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
+    Route::post('/recover-email', [AuthController::class, 'recoverEmail'])->middleware('throttle:5,1');
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:5,1');
+    Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:5,1');
+    Route::post('/verify-reset-token', [AuthController::class, 'verifyResetToken'])->middleware('throttle:10,1');
     
     // Protected auth routes
     Route::middleware('auth:sanctum')->group(function () {
@@ -50,6 +50,9 @@ Route::get('/enrollment/programs', [EnrollmentController::class, 'getPrograms'])
 Route::get('/colleges', [CollegeController::class, 'index']);
 Route::get('/colleges/{id}', [CollegeController::class, 'show']);
 
+// Public payment webhook callback
+Route::post('/payment/webhook/{provider}', [PaymentController::class, 'handleWebhook']);
+
 // Protected routes (require authentication)
 Route::middleware('auth:sanctum')->group(function () {
     
@@ -64,10 +67,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/enrollments/{id}', [StudentController::class, 'getEnrollment']);
         Route::get('/enrollments/{enrollmentId}/results', [StudentController::class, 'getResults']);
         
-        // Downloads (placeholders for PDF service)
+        // Downloads
         Route::get('/fees/{feeId}/challan', [StudentController::class, 'downloadChallan']);
+        Route::get('/fees/{feeId}/challan-pdf', [StudentController::class, 'downloadChallan']);
         Route::get('/enrollments/{enrollmentId}/admit-card', [StudentController::class, 'downloadAdmitCard']);
+        Route::get('/enrollments/{enrollmentId}/admit-card-pdf', [StudentController::class, 'downloadAdmitCard']);
         Route::get('/enrollments/{enrollmentId}/result-card', [StudentController::class, 'downloadResultCard']);
+        Route::get('/enrollments/{enrollmentId}/result-card-pdf', [StudentController::class, 'downloadResultCard']);
+        Route::get('/enrollments/{enrollmentId}/application-form-pdf', [StudentController::class, 'downloadApplicationForm']);
+        Route::get('/enrollments/{enrollmentId}/enrollment-card-pdf', [StudentController::class, 'downloadEnrollmentCard']);
     });
 
     // Enrollment management (Student)
@@ -79,7 +87,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [EnrollmentController::class, 'destroy']);
     });
 
-    // Payment routes (Student)
+    // Payment routes (Authenticated)
     Route::prefix('payment')->group(function () {
         Route::get('/history', [PaymentController::class, 'paymentHistory'])->middleware('check.role:STUDENT');
         Route::get('/fees/{feeId}', [PaymentController::class, 'getFee']);

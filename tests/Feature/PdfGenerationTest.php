@@ -137,4 +137,74 @@ class PdfGenerationTest extends TestCase
         $this->assertNotEmpty($output);
         $this->assertStringStartsWith('%PDF-', $output);
     }
+
+    public function test_student_can_download_challan_pdf_via_http(): void
+    {
+        $this->actingAs($this->user);
+
+        $response = $this->get("/enrollment/{$this->fee->id}/challan-pdf");
+
+        $response->assertStatus(200);
+        $this->assertEquals('application/pdf', $response->headers->get('Content-Type'));
+        $this->assertStringStartsWith('%PDF-', $response->getContent());
+    }
+
+    public function test_student_can_download_admit_card_pdf_via_http(): void
+    {
+        $this->actingAs($this->user);
+
+        $response = $this->get("/enrollment/{$this->enrollment->id}/admit-card-pdf");
+
+        $response->assertStatus(200);
+        $this->assertEquals('application/pdf', $response->headers->get('Content-Type'));
+        $this->assertStringStartsWith('%PDF-', $response->getContent());
+    }
+
+    public function test_student_can_download_application_form_pdf_via_http(): void
+    {
+        $this->actingAs($this->user);
+
+        $response = $this->get("/enrollment/{$this->enrollment->id}/application-form-pdf");
+
+        $response->assertStatus(200);
+        $this->assertEquals('application/pdf', $response->headers->get('Content-Type'));
+        $this->assertStringStartsWith('%PDF-', $response->getContent());
+    }
+
+    public function test_student_can_download_enrollment_card_pdf_via_http(): void
+    {
+        $this->actingAs($this->user);
+
+        $response = $this->get("/enrollment/{$this->enrollment->id}/enrollment-card-pdf");
+
+        $response->assertStatus(200);
+        $this->assertEquals('application/pdf', $response->headers->get('Content-Type'));
+        $this->assertStringStartsWith('%PDF-', $response->getContent());
+    }
+
+    public function test_admin_can_download_college_seat_list_pdf(): void
+    {
+        $admin = User::where('role', 'ADMIN')->first();
+        $this->actingAs($admin);
+
+        $academicYear = AcademicYear::first();
+        $response = $this->get("/api/colleges/{$this->college->id}/reports/seat-list-pdf?academicYearId={$academicYear->id}&gender=1");
+
+        $response->assertStatus(200);
+        $this->assertEquals('application/pdf', $response->headers->get('Content-Type'));
+        $this->assertStringStartsWith('%PDF-', $response->getContent());
+    }
+
+    public function test_admin_can_download_college_complete_list_pdf(): void
+    {
+        $admin = User::where('role', 'ADMIN')->first();
+        $this->actingAs($admin);
+
+        $academicYear = AcademicYear::first();
+        $response = $this->get("/api/colleges/{$this->college->id}/reports/complete-list-pdf?academicYearId={$academicYear->id}");
+
+        $response->assertStatus(200);
+        $this->assertEquals('application/pdf', $response->headers->get('Content-Type'));
+        $this->assertStringStartsWith('%PDF-', $response->getContent());
+    }
 }

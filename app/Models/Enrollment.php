@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\QueryException;
 
 class Enrollment extends Model
 {
@@ -201,6 +202,48 @@ class Enrollment extends Model
         }
 
         return $prefix . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Approve this enrollment, assigning a collision-safe roll number.
+     *
+     * Concurrent approvals can compute the same next roll number; the unique
+     * constraint catches that, and we regenerate and retry instead of failing
+     * or writing a duplicate.
+     */
+    public function approveWithRollNumber(): void
+    {
+        $this->status = 'APPROVED';
+        $this->rejection_reason = null;
+
+        $generated = false;
+        if (empty($this->roll_number)) {
+            $this->roll_number = $this->generateRollNumber();
+            $generated = true;
+        }
+
+        for ($attempt = 0; $attempt < 3; $attempt++) {
+            try {
+                $this->save();
+
+                return;
+            } catch (QueryException $e) {
+                if (! $this->isUniqueViolation($e) || ! $generated || $attempt === 2) {
+                    throw $e;
+                }
+
+                $this->roll_number = $this->generateRollNumber();
+            }
+        }
+    }
+
+    private function isUniqueViolation(QueryException $e): bool
+    {
+        $sqlState = (string) ($e->errorInfo[0] ?? $e->getCode());
+
+        return in_array($sqlState, ['23505', '23000'], true)
+            || str_contains($e->getMessage(), 'duplicate key')
+            || str_contains($e->getMessage(), 'Duplicate entry');
     }
 
     /**

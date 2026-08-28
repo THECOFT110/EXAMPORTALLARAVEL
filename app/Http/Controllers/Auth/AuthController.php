@@ -44,6 +44,30 @@ class AuthController extends Controller
     }
 
     /**
+     * Web user registration handler
+     */
+    public function webRegister(\App\Http\Requests\RegisterRequest $request)
+    {
+        $validated = $request->validated();
+
+        $user = User::create([
+            'full_name' => trim($validated['full_name']),
+            'father_name' => trim($validated['father_name']),
+            'cnic' => $validated['cnic'],
+            'email' => strtolower(trim($validated['email'])),
+            'phone' => $validated['phone'],
+            'password' => $validated['password'],
+            'role' => 'STUDENT',
+            'is_verified' => true,
+        ]);
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect()->route('student.dashboard')->with('success', 'Registration successful! Welcome to SALU Exam Portal.');
+    }
+
+    /**
      * Register a new user
      */
     public function register(Request $request)

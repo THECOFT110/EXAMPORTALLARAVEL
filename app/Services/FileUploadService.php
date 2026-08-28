@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Drivers\Gd\Driver as GdDriver;
+use Intervention\Image\Format;
 use Intervention\Image\ImageManager;
 
 class FileUploadService
@@ -20,21 +21,35 @@ class FileUploadService
 
         // Resize and optimize image (aspect-preserving, never upscales)
         $manager = new ImageManager(GdDriver::class);
-        $encoded = $manager->read($file->getPathname())
+        $encoded = $manager->decodePath($file->getPathname())
             ->scaleDown(400, 500)
-            ->toJpeg(80);
+            ->encodeUsingFormat(Format::JPEG, 80);
 
-        Storage::disk('public')->put($path.'/'.$filename, $encoded->toString());
+        Storage::disk('public')->put($path.'/'.$filename, (string) $encoded);
 
         return Storage::url($path.'/'.$filename);
     }
 
     /**
-     * Upload document (CNIC, certificates, etc.)
+     * Upload document (CNIC, certificates, etc.) with safe MIME inspection
      */
     public function uploadDocument(UploadedFile $file, string $userId, string $type): string
     {
-        $filename = $type.'_'.$userId.'_'.time().'.'.$file->getClientOriginalExtension();
+        $allowedMimes = [
+            'application/pdf' => 'pdf',
+            'image/jpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/webp' => 'webp',
+        ];
+
+        $mimeType = $file->getMimeType();
+        $safeExtension = $allowedMimes[$mimeType] ?? $file->guessExtension() ?? 'bin';
+
+        if (! array_key_exists($mimeType, $allowedMimes)) {
+            throw new \InvalidArgumentException('Unsupported or unsafe file format.');
+        }
+
+        $filename = preg_replace('/[^a-zA-Z0-9_-]/', '', $type).'_'.$userId.'_'.time().'_'.\Illuminate\Support\Str::random(6).'.'.$safeExtension;
         $path = 'uploads/students/documents/'.date('Y/m');
 
         $file->storeAs($path, $filename, 'public');
@@ -72,9 +87,9 @@ class FileUploadService
     }
 
     /**
-     * Validate file size and type
+     * Validate file size and MIME magic bytes
      */
-    public function validateFile(UploadedFile $file, array $allowedTypes, int $maxSizeKB = 5120): array
+    public function validateFile(UploadedFile $file, array $allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png'], int $maxSizeKB = 5120): array
     {
         $errors = [];
 
@@ -83,10 +98,28 @@ class FileUploadService
             $errors[] = 'File size must not exceed '.($maxSizeKB / 1024).'MB';
         }
 
-        // Check file type
-        $extension = strtolower($file->getClientOriginalExtension());
-        if (! in_array($extension, $allowedTypes)) {
-            $errors[] = 'File type must be one of: '.implode(', ', $allowedTypes);
+        // Validate via MIME inspection (magic bytes)
+        $mime = $file->getMimeType();
+        $guessedExt = strtolower($file->guessExtension() ?? '');
+
+        $validMimes = [
+            'application/pdf' => ['pdf'],
+            'image/jpeg' => ['jpg', 'jpeg'],
+            'image/png' => ['png'],
+            'image/webp' => ['webp'],
+        ];
+
+        $isValidMime = false;
+        foreach ($allowedExtensions as $ext) {
+            $normExt = strtolower($ext);
+            if ($guessedExt === $normExt || ($normExt === 'jpg' && $guessedExt === 'jpeg') || ($normExt === 'jpeg' && $guessedExt === 'jpg')) {
+                $isValidMime = true;
+                break;
+            }
+        }
+
+        if (! $isValidMime) {
+            $errors[] = 'Invalid file type. Allowed formats: '.implode(', ', $allowedExtensions);
         }
 
         return $errors;

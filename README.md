@@ -115,20 +115,17 @@ php artisan queue:work
 npm run dev
 ```
 
-## 🔑 Default Credentials
+## 🔑 Default Seeded Accounts
 
-### Super Admin
-- **Email:** admin@saluexamportal.edu.pk
-- **Password:** admin123
+> [!NOTE]
+> Passwords in local development default to environment variables `SEED_ADMIN_PASSWORD` and `SEED_STUDENT_PASSWORD` configured in your `.env` file (or `admin123` / `student123` in local testing environments).
 
-### Admin
-- **Email:** admin2@saluexamportal.edu.pk
-- **Password:** admin123
-
-### Test Student
-- **Email:** student@example.com
-- **CNIC:** 42101-3456789-3
-- **Password:** student123
+| Role | Identifier / Email | Notes |
+|---|---|---|
+| **Super Admin** | `admin@saluexamportal.edu.pk` | Full system control |
+| **Admin** | `admin2@saluexamportal.edu.pk` | Examination controller |
+| **College Admin** | `principal.gssc@saluexamportal.edu.pk` | College-scoped portal |
+| **Test Student** | `student@example.com` (or CNIC: `42101-3456789-3`) | Sample enrolled student |
 
 ## 📁 Project Structure
 

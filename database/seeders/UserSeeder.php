@@ -14,6 +14,9 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        $adminPassword = env('SEED_ADMIN_PASSWORD', 'admin123');
+        $studentPassword = env('SEED_STUDENT_PASSWORD', 'student123');
+
         $mainCampus = College::where('code', 'SALU-DCS')->first();
         $gsscCollege = College::where('code', 'GSSC-KHP')->first();
         $sukkurCollege = College::where('code', 'GIAC-SKR')->first();
@@ -27,7 +30,7 @@ class UserSeeder extends Seeder
                 'father_name' => 'Muhammad Yousuf Mirbahar',
                 'cnic' => '45201-1111111-1',
                 'phone' => '0300-1111111',
-                'password' => 'admin123',
+                'password' => $adminPassword,
                 'role' => 'SUPERADMIN',
                 'is_verified' => true,
                 'college_id' => null,
@@ -43,7 +46,7 @@ class UserSeeder extends Seeder
                 'father_name' => 'Allah Bux Shaikh',
                 'cnic' => '45201-2222222-2',
                 'phone' => '0300-2222222',
-                'password' => 'admin123',
+                'password' => $adminPassword,
                 'role' => 'ADMIN',
                 'is_verified' => true,
                 'college_id' => null,
@@ -59,7 +62,7 @@ class UserSeeder extends Seeder
                 'father_name' => 'Ahmed Khan Memon',
                 'cnic' => '45201-3333333-3',
                 'phone' => '0300-3333333',
-                'password' => 'admin123',
+                'password' => $adminPassword,
                 'role' => 'COLLEGE_ADMIN',
                 'is_verified' => true,
                 'college_id' => $gsscCollege?->id,
@@ -75,7 +78,7 @@ class UserSeeder extends Seeder
                 'father_name' => 'Muhammad Usman Kalhoro',
                 'cnic' => '45201-1234567-1',
                 'phone' => '0300-1234567',
-                'password' => 'student123',
+                'password' => $studentPassword,
                 'role' => 'STUDENT',
                 'is_verified' => true,
                 'college_id' => $mainCampus?->id,
@@ -143,7 +146,7 @@ class UserSeeder extends Seeder
                     'father_name' => $stu['father_name'],
                     'cnic' => $stu['cnic'],
                     'phone' => $stu['phone'],
-                    'password' => 'student123',
+                    'password' => $studentPassword,
                     'role' => 'STUDENT',
                     'is_verified' => true,
                     'college_id' => $stu['college_id'],

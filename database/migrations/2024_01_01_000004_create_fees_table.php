@@ -13,7 +13,7 @@ return new class extends Migration
             $table->foreignUuid('enrollment_id')->constrained('enrollments')->onDelete('cascade');
             $table->string('challan_number', 50)->unique();
             $table->decimal('amount', 10, 2);
-            $table->enum('status', ['UNPAID', 'PAID', 'VERIFIED', 'EXPIRED'])->default('UNPAID');
+            $table->enum('status', ['UNPAID', 'PENDING_VERIFICATION', 'PAID', 'VERIFIED', 'EXPIRED'])->default('UNPAID');
             $table->date('due_date')->nullable();
             $table->timestamp('paid_at')->nullable();
             $table->string('payment_method', 50)->nullable();

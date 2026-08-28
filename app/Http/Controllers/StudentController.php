@@ -288,13 +288,18 @@ class StudentController extends Controller
     {
         $user = $request->user();
 
-        $fee = Fee::with(['enrollment.user', 'enrollment.college'])
-            ->whereHas('enrollment', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })
-            ->findOrFail($feeId);
+        $fee = Fee::with(['enrollment.user', 'enrollment.college'])->findOrFail($feeId);
+        $enrollment = $fee->enrollment;
 
-        $pdf = $pdfService->generateChallan($fee, $fee->enrollment, $user);
+        if ($user->role === 'STUDENT' && $enrollment->user_id !== $user->id) {
+            abort(403, 'Unauthorized access to this challan.');
+        }
+
+        if ($user->role === 'COLLEGE_ADMIN' && $user->college_id && $enrollment->college_id !== $user->college_id) {
+            abort(403, 'Unauthorized access to this challan.');
+        }
+
+        $pdf = $pdfService->generateChallan($fee, $enrollment, $enrollment->user);
 
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',
@@ -309,10 +314,15 @@ class StudentController extends Controller
     {
         $user = $request->user();
 
-        $enrollment = Enrollment::where('id', $enrollmentId)
-            ->where('user_id', $user->id)
-            ->with(['admitCard.seat', 'college'])
-            ->firstOrFail();
+        $enrollment = Enrollment::with(['user', 'admitCard.seat', 'college'])->findOrFail($enrollmentId);
+
+        if ($user->role === 'STUDENT' && $enrollment->user_id !== $user->id) {
+            abort(403, 'Unauthorized access to this admit card.');
+        }
+
+        if ($user->role === 'COLLEGE_ADMIN' && $user->college_id && $enrollment->college_id !== $user->college_id) {
+            abort(403, 'Unauthorized access to this admit card.');
+        }
 
         if (! $enrollment->admitCard) {
             return response()->json([
@@ -320,7 +330,7 @@ class StudentController extends Controller
             ], 404);
         }
 
-        $pdf = $pdfService->generateAdmitCard($enrollment->admitCard, $enrollment, $user);
+        $pdf = $pdfService->generateAdmitCard($enrollment->admitCard, $enrollment, $enrollment->user);
 
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',
@@ -335,18 +345,163 @@ class StudentController extends Controller
     {
         $user = $request->user();
 
-        $enrollment = Enrollment::where('id', $enrollmentId)
-            ->where('user_id', $user->id)
-            ->with(['results' => function ($query) {
+        $enrollment = Enrollment::with([
+            'user',
+            'results' => function ($query) {
                 $query->whereNotNull('published_at');
-            }, 'college'])
-            ->firstOrFail();
+            },
+            'college',
+        ])->findOrFail($enrollmentId);
 
-        $pdf = $pdfService->generateResultCard($enrollment, $enrollment->results->toArray(), $user);
+        if ($user->role === 'STUDENT' && $enrollment->user_id !== $user->id) {
+            abort(403, 'Unauthorized access to this result card.');
+        }
+
+        if ($user->role === 'COLLEGE_ADMIN' && $user->college_id && $enrollment->college_id !== $user->college_id) {
+            abort(403, 'Unauthorized access to this result card.');
+        }
+
+        $pdf = $pdfService->generateResultCard($enrollment, $enrollment->results->toArray(), $enrollment->user);
 
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => "inline; filename=\"result-card-{$enrollment->roll_number}.pdf\"",
         ]);
+    }
+
+    /**
+     * Download application form
+     */
+    public function downloadApplicationForm(Request $request, string $enrollmentId, PdfService $pdfService)
+    {
+        $user = $request->user();
+
+        $enrollment = Enrollment::with(['user', 'college', 'academicYear'])->findOrFail($enrollmentId);
+
+        if ($user->role === 'STUDENT' && $enrollment->user_id !== $user->id) {
+            abort(403, 'Unauthorized access to this application form.');
+        }
+
+        if ($user->role === 'COLLEGE_ADMIN' && $user->college_id && $enrollment->college_id !== $user->college_id) {
+            abort(403, 'Unauthorized access to this application form.');
+        }
+
+        $pdf = $pdfService->generateApplicationForm($enrollment, $enrollment->user);
+
+        return response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => "inline; filename=\"application-form-{$enrollment->id}.pdf\"",
+        ]);
+    }
+
+    /**
+     * Download enrollment / registration card
+     */
+    public function downloadEnrollmentCard(Request $request, string $enrollmentId, PdfService $pdfService)
+    {
+        $user = $request->user();
+
+        $enrollment = Enrollment::with(['user', 'college', 'academicYear'])->findOrFail($enrollmentId);
+
+        if ($user->role === 'STUDENT' && $enrollment->user_id !== $user->id) {
+            abort(403, 'Unauthorized access to this registration card.');
+        }
+
+        if ($user->role === 'COLLEGE_ADMIN' && $user->college_id && $enrollment->college_id !== $user->college_id) {
+            abort(403, 'Unauthorized access to this registration card.');
+        }
+
+        $pdf = $pdfService->generateEnrollmentCard($enrollment, $enrollment->user);
+
+        return response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => "inline; filename=\"enrollment-card-{$enrollment->roll_number}.pdf\"",
+        ]);
+    }
+
+    /**
+     * Web Student Dashboard view
+     */
+    public function webDashboard(Request $request)
+    {
+        $user = $request->user();
+        $myEnrollment = Enrollment::where('user_id', $user->id)
+            ->with(['academicYear', 'college', 'fees', 'seat', 'admitCard', 'results'])
+            ->latest()
+            ->first();
+        $latestFee = $myEnrollment?->fees()->latest()->first();
+        $isWindowOpen = \App\Models\EnrollmentWindow::where('is_open', true)
+            ->where('start_date', '<=', now())
+            ->where('end_date', '>=', now())
+            ->exists();
+        $myAdmitCard = $myEnrollment?->admitCard;
+        $myResults = $myEnrollment?->results()->whereNotNull('published_at')->get();
+
+        return view('student.dashboard', compact(
+            'myEnrollment', 'latestFee', 'isWindowOpen', 'myAdmitCard', 'myResults'
+        ));
+    }
+
+    /**
+     * Web Student Profile view
+     */
+    public function webProfile(Request $request)
+    {
+        $user = $request->user()->load('college');
+        return view('student.profile', compact('user'));
+    }
+
+    /**
+     * Web Enrollments list view
+     */
+    public function webEnrollments(Request $request)
+    {
+        $user = $request->user();
+        $enrollments = Enrollment::where('user_id', $user->id)
+            ->with(['academicYear', 'college', 'fees', 'admitCard', 'results'])
+            ->latest()
+            ->get();
+
+        return view('student.enrollments', compact('enrollments'));
+    }
+
+    /**
+     * Web Enrollment details view
+     */
+    public function webEnrollmentDetails(Request $request, string $id)
+    {
+        $enrollment = Enrollment::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->with(['user', 'academicYear', 'college', 'fees', 'seat', 'admitCard', 'results'])
+            ->firstOrFail();
+
+        return view('student.enrollment-details', compact('id', 'enrollment'));
+    }
+
+    /**
+     * Web Results list view
+     */
+    public function webResults(Request $request)
+    {
+        $user = $request->user();
+        $enrollments = Enrollment::where('user_id', $user->id)
+            ->with(['results' => fn ($q) => $q->whereNotNull('published_at')])
+            ->get();
+
+        return view('student.results', compact('enrollments'));
+    }
+
+    /**
+     * Web Fees list view
+     */
+    public function webFees(Request $request)
+    {
+        $user = $request->user();
+        $fees = Fee::whereHas('enrollment', fn ($q) => $q->where('user_id', $user->id))
+            ->with('enrollment')
+            ->latest()
+            ->get();
+
+        return view('student.fees', compact('fees'));
     }
 }

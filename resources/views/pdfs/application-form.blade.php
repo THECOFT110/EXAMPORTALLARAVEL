@@ -117,8 +117,19 @@
 
     <div style="margin-bottom: 15px;">
         <div class="photo-box">
-            @if($enrollment->photo_url)
-                <img src="{{ public_path($enrollment->photo_url) }}" style="width: 100%; height: 100%; object-fit: cover;">
+            @php
+                $photoPath = null;
+                if (!empty($enrollment->photo_url)) {
+                    $cleanUrl = ltrim(parse_url($enrollment->photo_url, PHP_URL_PATH) ?? $enrollment->photo_url, '/');
+                    if (file_exists(public_path($cleanUrl))) {
+                        $photoPath = public_path($cleanUrl);
+                    } elseif (file_exists(storage_path('app/public/' . preg_replace('#^storage/#', '', $cleanUrl)))) {
+                        $photoPath = storage_path('app/public/' . preg_replace('#^storage/#', '', $cleanUrl));
+                    }
+                }
+            @endphp
+            @if($photoPath)
+                <img src="{{ $photoPath }}" style="width: 100%; height: 100%; object-fit: cover;">
             @else
                 Passport Size Photo
             @endif

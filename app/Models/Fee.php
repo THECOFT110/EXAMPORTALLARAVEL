@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class Fee extends Model
 {
@@ -61,6 +62,14 @@ class Fee extends Model
     }
 
     /**
+     * Scope a query to only include fees pending verification.
+     */
+    public function scopePendingVerification($query)
+    {
+        return $query->where('status', 'PENDING_VERIFICATION');
+    }
+
+    /**
      * Scope a query to only include expired fees.
      */
     public function scopeExpired($query)
@@ -81,6 +90,14 @@ class Fee extends Model
     }
 
     /**
+     * Check if fee is pending verification
+     */
+    public function isPendingVerification(): bool
+    {
+        return $this->status === 'PENDING_VERIFICATION';
+    }
+
+    /**
      * Check if fee is expired
      */
     public function isExpired(): bool
@@ -90,15 +107,28 @@ class Fee extends Model
     }
 
     /**
-     * Generate unique challan number
+     * Generate unique challan number with high entropy (cryptographically secure)
      */
     public static function generateChallanNumber(): string
     {
         do {
-            $challan = 'SALU-'.now()->format('Ymd').'-'.strtoupper(substr(md5(uniqid()), 0, 6));
+            $challan = 'SALU-'.now()->format('Ymd').'-'.strtoupper(Str::random(8));
         } while (static::where('challan_number', $challan)->exists());
 
         return $challan;
+    }
+
+    /**
+     * Mark fee as pending verification after student submission
+     */
+    public function markAsPendingVerification(?string $paymentMethod = null, ?string $transactionId = null): void
+    {
+        $this->update([
+            'status' => 'PENDING_VERIFICATION',
+            'paid_at' => now(),
+            'payment_method' => $paymentMethod,
+            'transaction_id' => $transactionId,
+        ]);
     }
 
     /**

@@ -97,10 +97,10 @@ class SuperAdminController extends Controller
      */
     public function updateSettings(Request $request)
     {
-        $updates = $request->except(['_token', '_method']);
+        $updates = SystemSetting::validateUpdates($request->except(['_token', '_method']));
 
         foreach ($updates as $key => $value) {
-            SystemSetting::set($key, is_array($value) ? json_encode($value) : (string)$value);
+            SystemSetting::set($key, (string) $value);
         }
 
         AuditLog::log(
@@ -135,9 +135,9 @@ class SuperAdminController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('full_name', 'like', '%' . $search . '%')
-                  ->orWhere('email', 'like', '%' . $search . '%')
-                  ->orWhere('cnic', 'like', '%' . $search . '%');
+                $q->where('full_name', 'ilike', '%' . $search . '%')
+                  ->orWhere('email', 'ilike', '%' . $search . '%')
+                  ->orWhere('cnic', 'ilike', '%' . $search . '%');
             });
         }
 
@@ -161,6 +161,20 @@ class SuperAdminController extends Controller
         ]);
 
         $user = User::findOrFail($id);
+
+        if ($user->id === $request->user()->id) {
+            return $request->expectsJson()
+                ? response()->json(['message' => 'You cannot change your own role.'], 403)
+                : back()->withErrors(['role' => 'You cannot change your own role.']);
+        }
+
+        if ($user->role === 'SUPERADMIN' && $validated['role'] !== 'SUPERADMIN'
+            && User::where('role', 'SUPERADMIN')->count() <= 1) {
+            return $request->expectsJson()
+                ? response()->json(['message' => 'Cannot demote the last super admin.'], 400)
+                : back()->withErrors(['role' => 'Cannot demote the last super admin.']);
+        }
+
         $oldRole = $user->role;
         $user->role = $validated['role'];
         $user->college_id = $validated['college_id'] ?? $user->college_id;

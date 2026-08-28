@@ -101,4 +101,66 @@ class PaymentTest extends TestCase
         $this->fee->refresh();
         $this->assertEquals('VERIFIED', $this->fee->status);
     }
+
+    public function test_student_submitting_payment_sets_pending_verification(): void
+    {
+        $this->actingAs($this->student, 'web');
+
+        $response = $this->post(route('payment.submit', $this->fee->id), [
+            'transaction_id' => 'JC-9988776655',
+            'payment_method' => 'JazzCash',
+        ]);
+
+        $response->assertRedirect(route('student.dashboard'));
+        $this->fee->refresh();
+        $this->assertEquals('PENDING_VERIFICATION', $this->fee->status);
+        $this->assertEquals('JC-9988776655', $this->fee->transaction_id);
+    }
+
+    public function test_admin_can_verify_pending_verification_fee(): void
+    {
+        $this->fee->markAsPendingVerification('EasyPaisa', 'EP-11223344');
+        $this->assertEquals('PENDING_VERIFICATION', $this->fee->status);
+
+        $this->actingAs($this->admin, 'sanctum');
+
+        $verifyResponse = $this->postJson("/api/admin/fees/{$this->fee->id}/verify");
+        $verifyResponse->assertStatus(200);
+
+        $this->fee->refresh();
+        $this->assertEquals('VERIFIED', $this->fee->status);
+    }
+
+    public function test_challan_number_generation_format_and_entropy(): void
+    {
+        $challan1 = Fee::generateChallanNumber();
+        $challan2 = Fee::generateChallanNumber();
+
+        $this->assertStringStartsWith('SALU-' . now()->format('Ymd') . '-', $challan1);
+        $this->assertNotEquals($challan1, $challan2);
+        $this->assertGreaterThanOrEqual(18, strlen($challan1));
+    }
+
+    public function test_payment_gateway_webhook_verifies_and_marks_fee_as_verified(): void
+    {
+        $salt = env('JAZZCASH_SALT', 'salt_demo');
+        $payload = [
+            'pp_BillReference' => $this->fee->challan_number,
+            'pp_TxnRefNo' => 'JC-WEBHOOK-999888',
+            'pp_Amount' => (string) ((int) ($this->fee->amount * 100)),
+        ];
+
+        ksort($payload);
+        $hashString = $salt . '&' . implode('&', $payload);
+        $payload['pp_SecureHash'] = strtoupper(hash_hmac('sha256', $hashString, $salt));
+
+        $response = $this->postJson('/api/payment/webhook/jazzcash', $payload);
+
+        $response->assertStatus(200)
+            ->assertJson(['success' => true]);
+
+        $this->fee->refresh();
+        $this->assertEquals('VERIFIED', $this->fee->status);
+        $this->assertEquals('JC-WEBHOOK-999888', $this->fee->transaction_id);
+    }
 }

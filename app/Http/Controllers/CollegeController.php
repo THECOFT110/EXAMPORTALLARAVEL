@@ -29,9 +29,9 @@ class CollegeController extends Controller
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', '%'.$search.'%')
-                    ->orWhere('code', 'like', '%'.$search.'%')
-                    ->orWhere('city', 'like', '%'.$search.'%');
+                $q->where('name', 'ilike', '%'.$search.'%')
+                    ->orWhere('code', 'ilike', '%'.$search.'%')
+                    ->orWhere('city', 'ilike', '%'.$search.'%');
             });
         }
 
@@ -164,6 +164,81 @@ class CollegeController extends Controller
                 'boys' => max(0, $college->boys_capacity - $maleCount),
                 'girls' => max(0, $college->girls_capacity - $femaleCount),
             ],
+        ]);
+    }
+
+    /**
+     * Download College Seat Allocation List PDF
+     */
+    public function downloadSeatListPdf(Request $request, string $collegeId, \App\Services\PdfService $pdfService)
+    {
+        $college = College::findOrFail($collegeId);
+        $academicYearId = $request->query('academicYearId', $request->input('academicYearId'));
+        $gender = $request->query('gender', $request->input('gender', '1'));
+
+        $academicYear = \App\Models\AcademicYear::find($academicYearId) ?? \App\Models\AcademicYear::where('is_active', true)->first() ?? 'Academic Session';
+        $genderStr = ($gender == '1' || strtoupper((string)$gender) === 'MALE' || strtoupper((string)$gender) === 'BOYS') ? 'MALE' : 'FEMALE';
+
+        $enrollments = \App\Models\Enrollment::where('college_id', $collegeId)
+            ->where(function ($q) use ($academicYearId) {
+                if ($academicYearId && strlen((string)$academicYearId) > 10) {
+                    $q->where('academic_year_id', $academicYearId);
+                }
+            })
+            ->where('gender', $genderStr)
+            ->where('status', 'APPROVED')
+            ->with(['user', 'seat'])
+            ->get();
+
+        $students = $enrollments->map(fn ($e) => [
+            'seat_no' => $e->seat?->seat_no ?? 'N/A',
+            'room_no' => $e->seat?->room_no ?? 'Hall A',
+            'roll_number' => $e->roll_number ?? 'Pending',
+            'name' => $e->user->full_name,
+            'program' => $e->program,
+        ])->toArray();
+
+        $pdf = $pdfService->generateCollegeSeatListPdf($college, $academicYear, $genderStr, $students);
+
+        return response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => "inline; filename=\"seat-list-{$college->code}-{$genderStr}.pdf\"",
+        ]);
+    }
+
+    /**
+     * Download Complete College Enrollment Register PDF
+     */
+    public function downloadCompleteListPdf(Request $request, string $collegeId, \App\Services\PdfService $pdfService)
+    {
+        $college = College::findOrFail($collegeId);
+        $academicYearId = $request->query('academicYearId', $request->input('academicYearId'));
+
+        $academicYear = \App\Models\AcademicYear::find($academicYearId) ?? \App\Models\AcademicYear::where('is_active', true)->first() ?? 'Academic Session';
+
+        $enrollments = \App\Models\Enrollment::where('college_id', $collegeId)
+            ->where(function ($q) use ($academicYearId) {
+                if ($academicYearId && strlen((string)$academicYearId) > 10) {
+                    $q->where('academic_year_id', $academicYearId);
+                }
+            })
+            ->with('user')
+            ->get();
+
+        $students = $enrollments->map(fn ($e) => [
+            'roll_number' => $e->roll_number ?? 'Pending',
+            'name' => $e->user->full_name,
+            'father_name' => $e->father_name ?? ($e->user->father_name ?? 'N/A'),
+            'cnic' => $e->user->cnic,
+            'gender' => $e->gender,
+            'program' => $e->program,
+        ])->toArray();
+
+        $pdf = $pdfService->generateCollegeCompleteListPdf($college, $academicYear, $students);
+
+        return response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => "inline; filename=\"complete-list-{$college->code}.pdf\"",
         ]);
     }
 }

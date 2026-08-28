@@ -97,4 +97,16 @@ class EnrollmentTest extends TestCase
         $this->assertEquals('APPROVED', $enrollment->status);
         $this->assertNotEmpty($enrollment->roll_number);
     }
+
+    public function test_student_photo_upload_and_optimization(): void
+    {
+        \Illuminate\Support\Facades\Storage::fake('public');
+
+        $file = \Illuminate\Http\UploadedFile::fake()->image('avatar.jpg', 600, 800);
+        $service = new \App\Services\FileUploadService();
+        $url = $service->uploadStudentPhoto($file, $this->student->id);
+
+        $this->assertNotEmpty($url);
+        $this->assertStringContainsString('uploads/students/photos/', $url);
+    }
 }

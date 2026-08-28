@@ -29,3 +29,10 @@ Thumbs.db
 !/storage/framework/views/.gitignore
 /storage/logs/*
 !/storage/logs/.gitignore
+
+# Database and Root Logs
+/database/*.sqlite
+/database/*.sqlite-journal
+/logs/
+*.log
+
