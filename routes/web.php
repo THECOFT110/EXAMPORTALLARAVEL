@@ -18,12 +18,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Root entry: Single Unified Login Board or redirect to role dashboard
-Route::get('/', function () {
-    if (Auth::check()) {
-        return (new AuthController)->redirectBasedOnRole(Auth::user());
-    }
-    return view('auth.login');
-})->name('home');
+Route::get('/', [AuthController::class, 'showLoginForm'])->name('home');
 
 Route::get('/about', fn () => view('welcome'))->name('about');
 Route::get('/programs', fn () => view('welcome'))->name('programs');

@@ -41,7 +41,7 @@
         <form method="post" action="{{ route('login') }}" id="signInForm" novalidate>
             @csrf
             
-            @if($errors->any())
+            @if(isset($errors) && $errors->any())
                 <div class="alert alert-danger border-0 shadow-sm rounded-3 py-1 px-2 mb-2 small" role="alert">
                     <ul class="mb-0 ps-3">
                         @foreach($errors->all() as $error)
