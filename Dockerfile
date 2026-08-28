@@ -11,7 +11,9 @@ RUN npm run build
 # ==========================================
 # Stage 2: Production PHP-FPM + Nginx
 # ==========================================
-FROM php:8.3-fpm-alpine AS production
+FROM php:8.4-fpm-alpine AS production
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Install system dependencies & libraries needed for extensions
 RUN apk add --no-cache \
