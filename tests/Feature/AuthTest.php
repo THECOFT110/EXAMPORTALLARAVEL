@@ -73,13 +73,27 @@ class AuthTest extends TestCase
         $response->assertStatus(401);
     }
 
+    private function createTestUser(string $role, string $password = 'Secret@123', bool $mustChangePassword = false): User
+    {
+        return User::create([
+            'full_name' => "Test {$role} User",
+            'father_name' => 'Test Father',
+            'cnic' => '42101-' . rand(1000000, 9999999) . '-' . rand(1, 9),
+            'email' => strtolower($role) . '_' . uniqid() . '@salu.edu.pk',
+            'password' => Hash::make($password),
+            'role' => $role,
+            'is_verified' => true,
+            'must_change_password' => $mustChangePassword,
+        ]);
+    }
+
     public function test_single_login_board_auto_redirects_student_to_student_dashboard(): void
     {
-        $student = User::where('role', 'STUDENT')->first();
+        $student = $this->createTestUser('STUDENT', 'Student@123');
 
         $response = $this->post('/login', [
             'email' => $student->email,
-            'password' => 'student123',
+            'password' => 'Student@123',
         ]);
 
         $response->assertRedirect(route('student.dashboard'));
@@ -88,33 +102,58 @@ class AuthTest extends TestCase
 
     public function test_single_login_board_auto_redirects_admin_to_admin_dashboard(): void
     {
-        $admin = User::where('role', 'ADMIN')->first();
+        $admin = $this->createTestUser('ADMIN', 'Admin@123');
 
         $response = $this->post('/login', [
             'email' => $admin->email,
-            'password' => 'admin123',
+            'password' => 'Admin@123',
         ]);
 
         $response->assertRedirect(route('admin.dashboard'));
         $this->assertAuthenticatedAs($admin);
     }
 
-    public function test_single_login_board_auto_redirects_superadmin_to_admin_dashboard(): void
+    public function test_single_login_board_auto_redirects_superadmin_to_force_change_password(): void
     {
-        $superadmin = User::where('role', 'SUPERADMIN')->first();
+        $superadmin = $this->createTestUser('SUPERADMIN', 'Admin@12345', true);
 
         $response = $this->post('/login', [
             'email' => $superadmin->email,
-            'password' => 'admin123',
+            'password' => 'Admin@12345',
+        ]);
+
+        $response->assertRedirect(route('password.force_change'));
+        $this->assertAuthenticatedAs($superadmin);
+    }
+
+    public function test_superadmin_blocked_from_dashboard_until_password_is_changed(): void
+    {
+        $superadmin = $this->createTestUser('SUPERADMIN', 'Admin@12345', true);
+
+        $response = $this->actingAs($superadmin, 'web')->get(route('admin.superadmin-dashboard'));
+        $response->assertRedirect(route('password.force_change'));
+    }
+
+    public function test_superadmin_can_successfully_change_password_on_first_login(): void
+    {
+        $superadmin = $this->createTestUser('SUPERADMIN', 'Admin@12345', true);
+
+        $response = $this->actingAs($superadmin, 'web')->post(route('password.force_change.update'), [
+            'current_password' => 'Admin@12345',
+            'password' => 'NewSecureAdmin!2026',
+            'password_confirmation' => 'NewSecureAdmin!2026',
         ]);
 
         $response->assertRedirect(route('admin.dashboard'));
-        $this->assertAuthenticatedAs($superadmin);
+        $superadmin->refresh();
+        $this->assertFalse($superadmin->must_change_password);
+        $this->assertNotNull($superadmin->password_changed_at);
+        $this->assertTrue(Hash::check('NewSecureAdmin!2026', $superadmin->password));
     }
 
     public function test_admin_can_render_admin_dashboard_view(): void
     {
-        $admin = User::where('role', 'ADMIN')->first();
+        $admin = $this->createTestUser('ADMIN', 'Admin@123', false);
 
         $response = $this->actingAs($admin, 'web')->get(route('admin.dashboard'));
         $response->assertStatus(200)
@@ -123,7 +162,7 @@ class AuthTest extends TestCase
 
     public function test_superadmin_can_render_superadmin_dashboard_view(): void
     {
-        $superadmin = User::where('role', 'SUPERADMIN')->first();
+        $superadmin = $this->createTestUser('SUPERADMIN', 'Admin@123', false);
 
         $response = $this->actingAs($superadmin, 'web')->get(route('admin.superadmin-dashboard'));
         $response->assertStatus(200)
@@ -132,7 +171,7 @@ class AuthTest extends TestCase
 
     public function test_college_admin_can_render_admin_dashboard_view(): void
     {
-        $collegeAdmin = User::where('role', 'COLLEGE_ADMIN')->first();
+        $collegeAdmin = $this->createTestUser('COLLEGE_ADMIN', 'Admin@123', false);
 
         $response = $this->actingAs($collegeAdmin, 'web')->get(route('admin.dashboard'));
         $response->assertStatus(200)

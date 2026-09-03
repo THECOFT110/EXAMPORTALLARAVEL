@@ -154,11 +154,8 @@ class SeatAllocationService
         $prefix = $gender === 'MALE' ? 'Boys' : 'Girls';
 
         // Simple room assignment logic - can be enhanced
-        $count = Seat::where('exam_center', $college->name)
-            ->where('room_no', 'like', $prefix.'%')
-            ->count();
-
-        $roomNumber = floor($count / 30) + 1; // 30 seats per room
+        $seatsPerRoom = config('app.seats_per_room', 30);
+        $roomNumber = floor($count / $seatsPerRoom) + 1;
 
         return $prefix.' Room '.$roomNumber;
     }

@@ -114,9 +114,9 @@ class PaymentController extends Controller
     }
 
     /**
-     * Simulate online payment (placeholder for payment gateway integration)
+     * Initiate online payment via payment gateway
      */
-    public function initiatePayment(Request $request, string $feeId)
+    public function initiatePayment(Request $request, string $feeId, \App\Services\PaymentGatewayService $gatewayService)
     {
         $fee = Fee::with('enrollment.user')->findOrFail($feeId);
 
@@ -132,34 +132,23 @@ class PaymentController extends Controller
             ], 400);
         }
 
-        // This would integrate with a payment gateway like JazzCash, EasyPaisa, etc.
-        // For now, return a placeholder response
+        if ($gatewayService->isJazzCashConfigured()) {
+            $returnUrl = route('student.dashboard');
+            $payload = $gatewayService->initiateJazzCashPayment($fee, $returnUrl);
 
-        return response()->json([
-            'message' => 'Payment gateway integration pending.',
-            'payment_url' => url("/payment/process/{$feeId}"),
-            'amount' => $fee->amount,
-            'challan_number' => $fee->challan_number,
-        ]);
-    }
-
-    /**
-     * Process payment callback (development/testing only)
-     */
-    public function processPayment(Request $request, string $feeId)
-    {
-        // Gated against non-local environments to prevent unauthorized payment marking
-        if (! app()->isLocal() && ! app()->environment('testing')) {
-            abort(403, 'Mock payment processing is disabled in this environment.');
+            return response()->json([
+                'provider' => 'jazzcash',
+                'payment_url' => config('services.jazzcash.checkout_url', 'https://payments.jazzcash.com.pk/CustomerPortal/transactionmanagement/merchantform/'),
+                'payload' => $payload,
+                'amount' => $fee->amount,
+                'challan_number' => $fee->challan_number,
+            ]);
         }
 
-        $fee = Fee::findOrFail($feeId);
-
-        $fee->markAsPaid('ONLINE', 'TXN-'.\Illuminate\Support\Str::random(12));
-
         return response()->json([
-            'success' => true,
-            'message' => 'Payment processed successfully.',
+            'message' => 'Automated online gateway is currently being configured. Please pay via bank branch or upload deposit slip in portal.',
+            'amount' => $fee->amount,
+            'challan_number' => $fee->challan_number,
         ]);
     }
 

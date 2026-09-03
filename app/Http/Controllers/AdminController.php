@@ -132,6 +132,15 @@ class AdminController extends Controller
             'fees', 'seat', 'admitCard', 'results',
         ])->findOrFail($id);
 
+        AuditLog::log(
+            $request->user()->id,
+            'VIEW_ENROLLMENT_DETAILS',
+            'Enrollment',
+            $id,
+            "Viewed student enrollment details for user {$enrollment->user_id}",
+            $request->ip()
+        );
+
         return response()->json([
             'id' => $enrollment->id,
             'student_name' => $enrollment->user->full_name,
@@ -232,9 +241,10 @@ class AdminController extends Controller
         ]);
 
         $enrollment = Enrollment::with('user')->findOrFail($id);
+        $reason = strip_tags($validated['reason']);
 
         $enrollment->status = 'REJECTED';
-        $enrollment->rejection_reason = $validated['reason'];
+        $enrollment->rejection_reason = $reason;
         $enrollment->save();
 
         AuditLog::log(
@@ -242,7 +252,7 @@ class AdminController extends Controller
             'REJECT_ENROLLMENT',
             'Enrollment',
             $id,
-            "Reason: {$validated['reason']}",
+            "Reason: {$reason}",
             $request->ip()
         );
 
@@ -542,6 +552,15 @@ class AdminController extends Controller
             SystemSetting::set($key, (string) $value);
         }
 
+        AuditLog::log(
+            $request->user()->id,
+            'UPDATE_SYSTEM_SETTINGS',
+            'SystemSetting',
+            'GLOBAL',
+            'Updated system configuration settings',
+            $request->ip()
+        );
+
         return response()->json([
             'message' => 'Settings updated.',
         ]);
@@ -621,12 +640,13 @@ class AdminController extends Controller
     {
         $enrollment = Enrollment::with('user')->findOrFail($id);
         $this->authorize('reject', $enrollment);
+        $reason = strip_tags($request->input('reason', 'Application rejected by administration'));
         $enrollment->status = 'REJECTED';
-        $enrollment->rejection_reason = $request->input('reason', 'Application rejected by administration');
+        $enrollment->rejection_reason = $reason;
         $enrollment->save();
 
         \App\Jobs\SendEnrollmentNotificationJob::dispatch($enrollment, 'rejected');
-        AuditLog::log(auth()->id(), 'REJECT_ENROLLMENT', 'Enrollment', $id, "Reason: {$enrollment->rejection_reason}", $request->ip());
+        AuditLog::log(auth()->id(), 'REJECT_ENROLLMENT', 'Enrollment', $id, "Reason: {$reason}", $request->ip());
 
         return back()->with('success', 'Enrollment application rejected.');
     }
@@ -654,6 +674,16 @@ class AdminController extends Controller
     {
         $enrollment = Enrollment::with(['user', 'academicYear', 'college', 'fees', 'seat', 'admitCard', 'results'])->findOrFail($id);
         $this->authorize('view', $enrollment);
+
+        AuditLog::log(
+            auth()->id() ?? 'SYSTEM',
+            'VIEW_ENROLLMENT_DETAILS',
+            'Enrollment',
+            $id,
+            "Viewed student enrollment details in web interface",
+            $request->ip()
+        );
+
         return view('admin.enrollment-details', compact('id', 'enrollment'));
     }
 

@@ -186,17 +186,18 @@ class EnrollmentController extends Controller
             ], 422);
         }
 
-        $enrollment->status = 'PENDING';
-        $enrollment->save();
+        $fee = \Illuminate\Support\Facades\DB::transaction(function () use ($enrollment) {
+            $enrollment->status = 'PENDING';
+            $enrollment->save();
 
-        // Generate fee challan
-        $fee = Fee::create([
-            'enrollment_id' => $enrollment->id,
-            'challan_number' => Fee::generateChallanNumber(),
-            'amount' => config('app.enrollment_fee_amount', 1500),
-            'status' => 'UNPAID',
-            'due_date' => now()->addDays(config('app.challan_validity_days', 7)),
-        ]);
+            return Fee::create([
+                'enrollment_id' => $enrollment->id,
+                'challan_number' => Fee::generateChallanNumber(),
+                'amount' => config('app.enrollment_fee_amount', 1500),
+                'status' => 'UNPAID',
+                'due_date' => now()->addDays(config('app.challan_validity_days', 7)),
+            ]);
+        });
 
         return response()->json([
             'message' => 'Enrollment submitted successfully. Please pay the fee to proceed.',
@@ -351,42 +352,44 @@ class EnrollmentController extends Controller
             $documents['intermediate'] = $fileUploadService->uploadDocument($request->file('doc_inter'), $user->id, 'intermediate');
         }
 
-        $enrollment = Enrollment::create([
-            'user_id' => $user->id,
-            'academic_year_id' => $activeYear?->id,
-            'college_id' => $validated['college_id'] ?? null,
-            'program' => $validated['program'],
-            'session' => $validated['session'] ?? now()->format('Y') . '-' . (now()->year + 4),
-            'semester' => $validated['semester'] ?? '1',
-            'father_name' => $validated['father_name'],
-            'surname' => $validated['surname'] ?? null,
-            'so_do_wo' => $validated['so_do_wo'] ?? null,
-            'dob' => $validated['dob'] ?? now()->subYears(18)->toDateString(),
-            'gender' => $validated['gender'],
-            'address' => $validated['address'],
-            'city' => $validated['city'] ?? null,
-            'contact_number' => $validated['contact_number'] ?? $user->phone,
-            'postal_address' => $validated['postal_address'] ?? null,
-            'passing_year' => $interRecord['passing_year'] ?? $validated['passing_year'] ?? null,
-            'division_obtained' => $interRecord['grade'] ?? $validated['division_obtained'] ?? null,
-            'name_of_board' => $interRecord['board'] ?? $validated['name_of_board'] ?? null,
-            'nationality' => $validated['nationality'] ?? 'Pakistani',
-            'religion' => $validated['religion'] ?? 'Islam',
-            'domicile_province' => $validated['domicile_province'] ?? 'Sindh',
-            'domicile_district' => $validated['domicile_district'] ?? null,
-            'academic_records' => $academicRecords,
-            'documents' => $documents,
-            'photo_url' => $photoUrl,
-            'status' => 'PENDING',
-        ]);
+        \Illuminate\Support\Facades\DB::transaction(function () use ($user, $activeYear, $validated, $interRecord, $academicRecords, $documents, $photoUrl) {
+            $enrollment = Enrollment::create([
+                'user_id' => $user->id,
+                'academic_year_id' => $activeYear?->id,
+                'college_id' => $validated['college_id'] ?? null,
+                'program' => $validated['program'],
+                'session' => $validated['session'] ?? now()->format('Y') . '-' . (now()->year + 4),
+                'semester' => $validated['semester'] ?? '1',
+                'father_name' => $validated['father_name'],
+                'surname' => $validated['surname'] ?? null,
+                'so_do_wo' => $validated['so_do_wo'] ?? null,
+                'dob' => $validated['dob'] ?? now()->subYears(18)->toDateString(),
+                'gender' => $validated['gender'],
+                'address' => strip_tags($validated['address']),
+                'city' => $validated['city'] ?? null,
+                'contact_number' => $validated['contact_number'] ?? $user->phone,
+                'postal_address' => isset($validated['postal_address']) ? strip_tags($validated['postal_address']) : null,
+                'passing_year' => $interRecord['passing_year'] ?? $validated['passing_year'] ?? null,
+                'division_obtained' => $interRecord['grade'] ?? $validated['division_obtained'] ?? null,
+                'name_of_board' => $interRecord['board'] ?? $validated['name_of_board'] ?? null,
+                'nationality' => $validated['nationality'] ?? 'Pakistani',
+                'religion' => $validated['religion'] ?? 'Islam',
+                'domicile_province' => $validated['domicile_province'] ?? 'Sindh',
+                'domicile_district' => $validated['domicile_district'] ?? null,
+                'academic_records' => $academicRecords,
+                'documents' => $documents,
+                'photo_url' => $photoUrl,
+                'status' => 'PENDING',
+            ]);
 
-        Fee::create([
-            'enrollment_id' => $enrollment->id,
-            'challan_number' => Fee::generateChallanNumber(),
-            'amount' => 1500.00,
-            'status' => 'UNPAID',
-            'due_date' => now()->addDays(7),
-        ]);
+            Fee::create([
+                'enrollment_id' => $enrollment->id,
+                'challan_number' => Fee::generateChallanNumber(),
+                'amount' => config('app.enrollment_fee_amount', 1500.00),
+                'status' => 'UNPAID',
+                'due_date' => now()->addDays(config('app.challan_validity_days', 7)),
+            ]);
+        });
 
         return redirect()->route('student.dashboard')->with('success', 'Enrollment application submitted successfully! Please proceed to fee payment.');
     }

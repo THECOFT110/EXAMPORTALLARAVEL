@@ -183,7 +183,7 @@ class Enrollment extends Model
     }
 
     /**
-     * Generate roll number
+     * Generate collision-resistant roll number
      */
     public function generateRollNumber(): string
     {
@@ -192,6 +192,7 @@ class Enrollment extends Model
 
         $latest = static::where('roll_number', 'like', "{$prefix}%")
             ->orderByDesc('roll_number')
+            ->lockForUpdate()
             ->value('roll_number');
 
         if ($latest) {
@@ -201,7 +202,7 @@ class Enrollment extends Model
             $nextNumber = static::where('status', 'APPROVED')->count() + 1;
         }
 
-        return $prefix . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+        return $prefix . str_pad((string) $nextNumber, 5, '0', STR_PAD_LEFT);
     }
 
     /**
@@ -213,28 +214,30 @@ class Enrollment extends Model
      */
     public function approveWithRollNumber(): void
     {
-        $this->status = 'APPROVED';
-        $this->rejection_reason = null;
+        \Illuminate\Support\Facades\DB::transaction(function () {
+            $this->status = 'APPROVED';
+            $this->rejection_reason = null;
 
-        $generated = false;
-        if (empty($this->roll_number)) {
-            $this->roll_number = $this->generateRollNumber();
-            $generated = true;
-        }
-
-        for ($attempt = 0; $attempt < 3; $attempt++) {
-            try {
-                $this->save();
-
-                return;
-            } catch (QueryException $e) {
-                if (! $this->isUniqueViolation($e) || ! $generated || $attempt === 2) {
-                    throw $e;
-                }
-
+            $generated = false;
+            if (empty($this->roll_number)) {
                 $this->roll_number = $this->generateRollNumber();
+                $generated = true;
             }
-        }
+
+            for ($attempt = 0; $attempt < 10; $attempt++) {
+                try {
+                    $this->save();
+
+                    return;
+                } catch (QueryException $e) {
+                    if (! $this->isUniqueViolation($e) || ! $generated || $attempt === 9) {
+                        throw $e;
+                    }
+
+                    $this->roll_number = $this->generateRollNumber();
+                }
+            }
+        });
     }
 
     private function isUniqueViolation(QueryException $e): bool

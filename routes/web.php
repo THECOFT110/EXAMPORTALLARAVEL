@@ -44,6 +44,9 @@ Route::middleware('guest')->group(function () {
 
 // Authenticated common routes
 Route::middleware('auth')->group(function () {
+    Route::get('/force-change-password', [AuthController::class, 'showForceChangePasswordForm'])->name('password.force_change');
+    Route::post('/force-change-password', [AuthController::class, 'forceChangePassword'])->name('password.force_change.update');
+
     Route::post('/logout', [AuthController::class, 'webLogout'])->name('logout');
 
     Route::get('/profile', function () {
@@ -68,6 +71,7 @@ Route::middleware(['auth', 'check.role:STUDENT'])->prefix('student')->name('stud
 Route::middleware(['auth', 'check.role:STUDENT'])->prefix('enrollment')->name('enrollment.')->group(function () {
     Route::get('/create', [EnrollmentController::class, 'webCreate'])->name('create');
     Route::post('/', [EnrollmentController::class, 'webStore'])->name('store');
+    Route::post('/ocr/scan-document', [\App\Http\Controllers\OcrController::class, 'scanDocument'])->name('ocr.scan');
     Route::get('/card', [EnrollmentController::class, 'webCard'])->name('card');
     Route::get('/{id}', [EnrollmentController::class, 'webShow'])->name('details');
 });

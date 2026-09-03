@@ -24,11 +24,13 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->web(append: [
             \App\Http\Middleware\StrictSessionTimeout::class,
+            \App\Http\Middleware\ForcePasswordChange::class,
         ]);
 
         $middleware->alias([
             'check.role' => \App\Http\Middleware\CheckRole::class,
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+            'force.password.change' => \App\Http\Middleware\ForcePasswordChange::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

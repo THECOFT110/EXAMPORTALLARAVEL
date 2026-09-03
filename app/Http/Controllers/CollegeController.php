@@ -200,6 +200,15 @@ class CollegeController extends Controller
 
         $pdf = $pdfService->generateCollegeSeatListPdf($college, $academicYear, $genderStr, $students);
 
+        \App\Models\AuditLog::log(
+            auth()->id() ?? 'SYSTEM',
+            'DOWNLOAD_COLLEGE_SEAT_LIST',
+            'College',
+            $collegeId,
+            "Downloaded seat allocation report for college {$college->code}",
+            $request->ip()
+        );
+
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => "inline; filename=\"seat-list-{$college->code}-{$genderStr}.pdf\"",
@@ -235,6 +244,15 @@ class CollegeController extends Controller
         ])->toArray();
 
         $pdf = $pdfService->generateCollegeCompleteListPdf($college, $academicYear, $students);
+
+        \App\Models\AuditLog::log(
+            auth()->id() ?? 'SYSTEM',
+            'DOWNLOAD_COLLEGE_REGISTER',
+            'College',
+            $collegeId,
+            "Downloaded complete enrollment register for college {$college->code}",
+            $request->ip()
+        );
 
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',

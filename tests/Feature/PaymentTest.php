@@ -143,7 +143,9 @@ class PaymentTest extends TestCase
 
     public function test_payment_gateway_webhook_verifies_and_marks_fee_as_verified(): void
     {
-        $salt = env('JAZZCASH_SALT', 'salt_demo');
+        $salt = 'strong_secure_test_salt_1234567890';
+        config(['services.jazzcash.salt' => $salt]);
+
         $payload = [
             'pp_BillReference' => $this->fee->challan_number,
             'pp_TxnRefNo' => 'JC-WEBHOOK-999888',

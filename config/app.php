@@ -21,9 +21,26 @@ return [
         ),
     ],
 
+    'version' => env('APP_VERSION', '1.0.0'),
+
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Application Security & Business Configuration Constants
+    |--------------------------------------------------------------------------
+    */
+    'seats_per_room' => (int) env('SEATS_PER_ROOM', 30),
+    'photo_max_width' => (int) env('PHOTO_MAX_WIDTH', 400),
+    'photo_max_height' => (int) env('PHOTO_MAX_HEIGHT', 500),
+    'photo_jpeg_quality' => (int) env('PHOTO_JPEG_QUALITY', 80),
+    'photo_max_size_kb' => (int) env('PHOTO_MAX_SIZE_KB', 2048),
+    'doc_max_size_kb' => (int) env('MAX_FILE_SIZE', 5120),
+    'enrollment_fee_amount' => (float) env('ENROLLMENT_FEE_AMOUNT', 1500.00),
+    'exam_fee_amount' => (float) env('EXAM_FEE_AMOUNT', 2000.00),
+    'late_fee_amount' => (float) env('LATE_FEE_AMOUNT', 500.00),
+    'challan_validity_days' => (int) env('CHALLAN_VALIDITY_DAYS', 7),
 ];

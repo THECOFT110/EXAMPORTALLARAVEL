@@ -11,19 +11,64 @@ use Intervention\Image\ImageManager;
 class FileUploadService
 {
     /**
+     * Allowed document MIME types and extensions
+     */
+    protected const ALLOWED_DOC_MIMES = [
+        'application/pdf' => 'pdf',
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/webp' => 'webp',
+    ];
+
+    /**
+     * Detect actual MIME type using PHP Fileinfo magic byte analysis
+     */
+    public function detectActualMimeType(UploadedFile $file): string
+    {
+        $realPath = $file->getRealPath();
+        if ($realPath && function_exists('finfo_open')) {
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            if ($finfo) {
+                $mime = finfo_file($finfo, $realPath);
+                finfo_close($finfo);
+                if (! empty($mime)) {
+                    return $mime;
+                }
+            }
+        }
+
+        return $file->getMimeType() ?? 'application/octet-stream';
+    }
+
+    /**
      * Upload student photo
      */
     public function uploadStudentPhoto(UploadedFile $file, string $userId): string
     {
-        // Always stored as JPEG since the image is re-encoded below
-        $filename = 'photo_'.$userId.'_'.time().'.jpg';
-        $path = 'uploads/students/photos/'.date('Y/m');
+        $maxPhotoSize = config('app.photo_max_size_kb', 2048) * 1024;
+        if ($file->getSize() > $maxPhotoSize) {
+            throw new \InvalidArgumentException('Student photo exceeds maximum allowed size of 2MB.');
+        }
+
+        $actualMime = $this->detectActualMimeType($file);
+        $allowedPhotoMimes = ['image/jpeg', 'image/png', 'image/webp'];
+        if (! in_array($actualMime, $allowedPhotoMimes, true)) {
+            throw new \InvalidArgumentException('Invalid student photo format. Only JPG, PNG, and WebP images are permitted.');
+        }
+
+        $maxWidth = config('app.photo_max_width', 400);
+        $maxHeight = config('app.photo_max_height', 500);
+        $jpegQuality = config('app.photo_jpeg_quality', 80);
+
+        // Always stored as JPEG with unpredictable cryptographic random filename
+        $filename = 'photo_' . bin2hex(random_bytes(16)) . '.jpg';
+        $path = 'uploads/students/photos/' . date('Y/m');
 
         // Resize and optimize image (aspect-preserving, never upscales)
         $manager = new ImageManager(GdDriver::class);
         $encoded = $manager->decodePath($file->getPathname())
-            ->scaleDown(400, 500)
-            ->encodeUsingFormat(Format::JPEG, 80);
+            ->scaleDown($maxWidth, $maxHeight)
+            ->encodeUsingFormat(Format::JPEG, $jpegQuality);
 
         Storage::disk('public')->put($path.'/'.$filename, (string) $encoded);
 
@@ -31,26 +76,28 @@ class FileUploadService
     }
 
     /**
-     * Upload document (CNIC, certificates, etc.) with safe MIME inspection
+     * Upload document (CNIC, certificates, etc.) with safe magic bytes MIME inspection
      */
     public function uploadDocument(UploadedFile $file, string $userId, string $type): string
     {
-        $allowedMimes = [
-            'application/pdf' => 'pdf',
-            'image/jpeg' => 'jpg',
-            'image/png' => 'png',
-            'image/webp' => 'webp',
-        ];
-
-        $mimeType = $file->getMimeType();
-        $safeExtension = $allowedMimes[$mimeType] ?? $file->guessExtension() ?? 'bin';
-
-        if (! array_key_exists($mimeType, $allowedMimes)) {
-            throw new \InvalidArgumentException('Unsupported or unsafe file format.');
+        $maxDocSize = config('app.doc_max_size_kb', 5120) * 1024;
+        if ($file->getSize() > $maxDocSize) {
+            throw new \InvalidArgumentException('Document exceeds maximum allowed size of 5MB.');
         }
 
-        $filename = preg_replace('/[^a-zA-Z0-9_-]/', '', $type).'_'.$userId.'_'.time().'_'.\Illuminate\Support\Str::random(6).'.'.$safeExtension;
-        $path = 'uploads/students/documents/'.date('Y/m');
+        $actualMime = $this->detectActualMimeType($file);
+
+        if (! array_key_exists($actualMime, self::ALLOWED_DOC_MIMES)) {
+            throw new \InvalidArgumentException('Unsupported or unsafe file format detected via content inspection.');
+        }
+
+        $safeExtension = self::ALLOWED_DOC_MIMES[$actualMime];
+        $safeType = preg_replace('/[^a-zA-Z0-9_-]/', '', $type);
+        $prefix = ! empty($safeType) ? $safeType . '_' : 'doc_';
+
+        // Cryptographically secure random filename
+        $filename = $prefix . bin2hex(random_bytes(16)) . '.' . $safeExtension;
+        $path = 'uploads/students/documents/' . date('Y/m');
 
         $file->storeAs($path, $filename, 'public');
 

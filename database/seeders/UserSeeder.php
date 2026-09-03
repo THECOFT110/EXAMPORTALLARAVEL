@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminPassword = env('SEED_ADMIN_PASSWORD', 'admin123');
+        $adminPassword = env('SEED_ADMIN_PASSWORD', 'Admin@12345');
         $studentPassword = env('SEED_STUDENT_PASSWORD', 'student123');
 
         $mainCampus = College::where('code', 'SALU-DCS')->first();
@@ -22,10 +22,9 @@ class UserSeeder extends Seeder
         $sukkurCollege = College::where('code', 'GIAC-SKR')->first();
 
         // 1. Super Administrator
-        User::updateOrCreate(
+        $this->upsertUser(
             ['email' => 'admin@saluexamportal.edu.pk'],
             [
-                'id' => (string) Str::uuid(),
                 'full_name' => 'Prof. Dr. Abdul Majeed Mirbahar',
                 'father_name' => 'Muhammad Yousuf Mirbahar',
                 'cnic' => '45201-1111111-1',
@@ -33,15 +32,15 @@ class UserSeeder extends Seeder
                 'password' => $adminPassword,
                 'role' => 'SUPERADMIN',
                 'is_verified' => true,
+                'must_change_password' => true,
                 'college_id' => null,
             ]
         );
 
         // 2. Controller of Examinations (Admin)
-        User::updateOrCreate(
+        $this->upsertUser(
             ['email' => 'admin2@saluexamportal.edu.pk'],
             [
-                'id' => (string) Str::uuid(),
                 'full_name' => 'Dr. Ghulam Sarwar Shaikh',
                 'father_name' => 'Allah Bux Shaikh',
                 'cnic' => '45201-2222222-2',
@@ -54,10 +53,9 @@ class UserSeeder extends Seeder
         );
 
         // 3. College Admin (Khairpur Degree College)
-        User::updateOrCreate(
+        $this->upsertUser(
             ['email' => 'principal.gssc@saluexamportal.edu.pk'],
             [
-                'id' => (string) Str::uuid(),
                 'full_name' => 'Prof. Imtiaz Ahmed Memon',
                 'father_name' => 'Ahmed Khan Memon',
                 'cnic' => '45201-3333333-3',
@@ -70,10 +68,9 @@ class UserSeeder extends Seeder
         );
 
         // 4. Primary Verified Student (Testing Student)
-        User::updateOrCreate(
+        $this->upsertUser(
             ['email' => 'student@example.com'],
             [
-                'id' => (string) Str::uuid(),
                 'full_name' => 'Ali Raza Kalhoro',
                 'father_name' => 'Muhammad Usman Kalhoro',
                 'cnic' => '45201-1234567-1',
@@ -138,10 +135,9 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($students as $stu) {
-            User::updateOrCreate(
+            $this->upsertUser(
                 ['email' => $stu['email']],
                 [
-                    'id' => (string) Str::uuid(),
                     'full_name' => $stu['full_name'],
                     'father_name' => $stu['father_name'],
                     'cnic' => $stu['cnic'],
@@ -155,5 +151,21 @@ class UserSeeder extends Seeder
         }
 
         $this->command->info('Users seeded with real SALU student and admin accounts successfully!');
+    }
+
+    /**
+     * Upsert user without mutating existing primary key ID
+     */
+    private function upsertUser(array $attributes, array $values): User
+    {
+        $user = User::where($attributes)->first();
+        if ($user) {
+            $user->update($values);
+            return $user;
+        }
+
+        return User::create(array_merge($attributes, $values, [
+            'id' => (string) Str::uuid(),
+        ]));
     }
 }

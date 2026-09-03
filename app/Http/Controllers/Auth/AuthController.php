@@ -104,7 +104,7 @@ class AuthController extends Controller
 
         // Check for duplicate phone
         $formattedPhone = substr($phoneDigits, 0, 4).'-'.substr($phoneDigits, 4);
-        if (User::whereRaw("REPLACE(REPLACE(phone, '-', ''), ' ', '') = ?", [$phoneDigits])->exists()) {
+        if (User::wherePhoneDigits($phoneDigits)->exists()) {
             return response()->json([
                 'message' => 'This phone number is already registered.',
                 'field' => 'phone',
@@ -167,18 +167,9 @@ class AuthController extends Controller
         ]);
 
         $input = trim($credentials['email']);
-        $emailLower = strtolower($input);
-        $cnicDigits = preg_replace('/\D/', '', $input);
 
-        // Find user by email or CNIC
-        $user = User::where(function ($query) use ($emailLower, $input, $cnicDigits) {
-            $query->where('email', $emailLower)
-                ->orWhere('cnic', $input);
-
-            if (strlen($cnicDigits) === 13) {
-                $query->orWhereRaw("REPLACE(cnic, '-', '') = ?", [$cnicDigits]);
-            }
-        })->first();
+        // Find user by email or CNIC using scope
+        $user = User::whereEmailOrCnic($input)->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
             return back()->withErrors([
@@ -199,10 +190,130 @@ class AuthController extends Controller
     }
 
     /**
+     * Show force password change form
+     */
+    public function showForceChangePasswordForm()
+    {
+        $user = Auth::user();
+
+        if (! $user) {
+            return redirect()->route('login');
+        }
+
+        if (! $user->must_change_password) {
+            return $this->redirectBasedOnRole($user);
+        }
+
+        return view('auth.force-change-password', compact('user'));
+    }
+
+    /**
+     * Handle force password change submission
+     */
+    public function forceChangePassword(Request $request)
+    {
+        $user = Auth::user();
+
+        if (! $user) {
+            return redirect()->route('login');
+        }
+
+        $validated = $request->validate([
+            'current_password' => 'required|string',
+            'password' => ['required', 'string', 'confirmed', PasswordRule::min(8)],
+        ], [
+            'current_password.required' => 'Please enter your current temporary/default password.',
+            'password.required' => 'Please enter a new password.',
+            'password.confirmed' => 'The password confirmation does not match.',
+            'password.min' => 'Your new password must be at least 8 characters long.',
+        ]);
+
+        if (! Hash::check($validated['current_password'], $user->password)) {
+            return back()->withErrors([
+                'current_password' => 'The current password you entered is incorrect.',
+            ]);
+        }
+
+        if (Hash::check($validated['password'], $user->password)) {
+            return back()->withErrors([
+                'password' => 'The new password cannot be identical to your current default password.',
+            ]);
+        }
+
+        $user->password = $validated['password'];
+        $user->must_change_password = false;
+        $user->password_changed_at = now();
+        $user->save();
+
+        try {
+            \App\Models\AuditLog::create([
+                'id' => (string) Str::uuid(),
+                'user_id' => $user->id,
+                'action' => 'FORCE_PASSWORD_CHANGED',
+                'description' => "User {$user->email} successfully updated required initial password.",
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+        } catch (\Throwable $e) {
+            // Non-fatal audit log
+        }
+
+        return $this->redirectBasedOnRole($user)
+            ->with('success', 'Your password has been changed successfully! You now have full access.');
+    }
+
+    /**
+     * API Force change password
+     */
+    public function apiForceChangePassword(Request $request)
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        $validated = $request->validate([
+            'current_password' => 'required|string',
+            'password' => ['required', 'string', 'confirmed', PasswordRule::min(8)],
+        ]);
+
+        if (! Hash::check($validated['current_password'], $user->password)) {
+            return response()->json([
+                'message' => 'The current password you entered is incorrect.',
+                'errors' => ['current_password' => ['The current password is incorrect.']],
+            ], 422);
+        }
+
+        if (Hash::check($validated['password'], $user->password)) {
+            return response()->json([
+                'message' => 'The new password cannot be identical to your current default password.',
+                'errors' => ['password' => ['New password must be different.']],
+            ], 422);
+        }
+
+        $user->password = $validated['password'];
+        $user->must_change_password = false;
+        $user->password_changed_at = now();
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password updated successfully.',
+            'must_change_password' => false,
+        ]);
+    }
+
+    /**
      * Helper to determine dashboard redirect based on role
      */
     public function redirectBasedOnRole(User $user)
     {
+        if ($user->must_change_password) {
+            return redirect()->route('password.force_change')
+                ->with('warning', 'Security requirement: You must change your default password before proceeding.');
+        }
+
         return match ($user->role) {
             'SUPERADMIN', 'ADMIN', 'COLLEGE_ADMIN' => redirect()->intended(route('admin.dashboard')),
             'STUDENT' => redirect()->intended(route('student.dashboard')),
@@ -233,18 +344,9 @@ class AuthController extends Controller
         ]);
 
         $input = trim($validated['email']);
-        $emailLower = strtolower($input);
-        $cnicDigits = preg_replace('/\D/', '', $input);
 
-        // Find user by email or CNIC
-        $user = User::where(function ($query) use ($emailLower, $input, $cnicDigits) {
-            $query->where('email', $emailLower)
-                ->orWhere('cnic', $input);
-
-            if (strlen($cnicDigits) === 13) {
-                $query->orWhereRaw("REPLACE(cnic, '-', '') = ?", [$cnicDigits]);
-            }
-        })->first();
+        // Find user by email or CNIC using scope
+        $user = User::whereEmailOrCnic($input)->first();
 
         if (! $user || ! Hash::check($validated['password'], $user->password)) {
             return response()->json([
@@ -264,22 +366,25 @@ class AuthController extends Controller
         // Also log in via session for web requests
         Auth::login($user, $request->filled('remember'));
 
-        $redirectPath = match ($user->role) {
-            'SUPERADMIN' => '/admin/superadmin-dashboard',
-            'ADMIN', 'COLLEGE_ADMIN' => '/admin/dashboard',
-            'STUDENT' => '/student/dashboard',
+        $redirectPath = match (true) {
+            $user->must_change_password => '/force-change-password',
+            $user->role === 'SUPERADMIN' => '/admin/superadmin-dashboard',
+            in_array($user->role, ['ADMIN', 'COLLEGE_ADMIN']) => '/admin/dashboard',
+            $user->role === 'STUDENT' => '/student/dashboard',
             default => '/',
         };
 
         return response()->json([
             'token' => $token,
             'redirect_url' => $redirectPath,
+            'must_change_password' => (bool) $user->must_change_password,
             'user' => [
                 'id' => $user->id,
                 'full_name' => $user->full_name,
                 'email' => $user->email,
                 'role' => $user->role,
                 'phone' => $user->phone,
+                'must_change_password' => (bool) $user->must_change_password,
             ],
         ]);
     }
@@ -331,14 +436,13 @@ class AuthController extends Controller
             ], 422);
         }
 
-        $user = User::where('cnic', $validated['cnic'])
-            ->orWhereRaw("REPLACE(cnic, '-', '') = ?", [$cnicDigits])
-            ->first();
+        $user = User::whereCnicDigits($cnicDigits)->first();
 
         if (! $user) {
             return response()->json([
-                'message' => 'No registered account found with this CNIC.',
-            ], 404);
+                'found' => false,
+                'message' => 'If an account exists with this CNIC, recovery instructions have been recorded.',
+            ], 200);
         }
 
         $maskedEmail = $this->maskEmail($user->email);
@@ -361,33 +465,28 @@ class AuthController extends Controller
 
         $user = User::where('email', strtolower(trim($validated['email'])))->first();
 
-        // Always return success to prevent email enumeration
-        if (! $user) {
-            return response()->json([
-                'message' => 'If your email is registered, a reset link has been sent.',
-            ]);
-        }
+        if ($user) {
+            // Generate cryptographically secure reset token (64 hex characters from 32 random bytes)
+            $token = bin2hex(random_bytes(32));
+            $tokenHash = hash('sha256', $token);
 
-        // Generate reset token
-        $token = Str::random(64);
-        $tokenHash = hash('sha256', $token);
+            $user->password_reset_token_hash = $tokenHash;
+            $user->password_reset_token_expires_at = now()->addMinutes(15);
+            $user->save();
 
-        $user->password_reset_token_hash = $tokenHash;
-        $user->password_reset_token_expires_at = now()->addHour();
-        $user->save();
+            // Build reset link
+            $resetLink = url("/reset-password?token={$token}&email=".urlencode($user->email));
 
-        // Build reset link
-        $resetLink = url("/reset-password?token={$token}&email=".urlencode($user->email));
-
-        // Send email via Resend Email Service
-        try {
-            app(\App\Services\EmailService::class)->sendPasswordResetEmail(
-                $user->email,
-                $user->full_name,
-                $resetLink
-            );
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning('Password reset email sending error: '.$e->getMessage());
+            // Send email via Resend Email Service
+            try {
+                app(\App\Services\EmailService::class)->sendPasswordResetEmail(
+                    $user->email,
+                    $user->full_name,
+                    $resetLink
+                );
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::warning('Password reset email sending error: '.$e->getMessage());
+            }
         }
 
         return response()->json([
@@ -406,20 +505,16 @@ class AuthController extends Controller
             'password' => ['required', 'string', PasswordRule::min(8)],
         ]);
 
+        $tokenHash = hash('sha256', $validated['token']);
         $user = User::where('email', strtolower(trim($validated['email'])))->first();
 
-        if (! $user ||
-            ! $user->password_reset_token_hash ||
-            ! $user->password_reset_token_expires_at ||
-            $user->password_reset_token_expires_at->isPast()) {
-            return response()->json([
-                'message' => 'Reset link is invalid or has expired.',
-            ], 400);
-        }
+        $isValid = $user
+            && ! empty($user->password_reset_token_hash)
+            && $user->password_reset_token_expires_at
+            && ! $user->password_reset_token_expires_at->isPast()
+            && hash_equals($user->password_reset_token_hash, $tokenHash);
 
-        $tokenHash = hash('sha256', $validated['token']);
-
-        if (! hash_equals($user->password_reset_token_hash, $tokenHash)) {
+        if (! $isValid) {
             return response()->json([
                 'message' => 'Reset link is invalid or has expired.',
             ], 400);
@@ -445,21 +540,16 @@ class AuthController extends Controller
             'token' => 'required|string',
         ]);
 
+        $tokenHash = hash('sha256', $validated['token']);
         $user = User::where('email', strtolower(trim($validated['email'])))->first();
 
-        if (! $user ||
-            ! $user->password_reset_token_hash ||
-            $user->password_reset_token_expires_at->isPast()) {
-            return response()->json(['valid' => false]);
-        }
+        $isValid = $user
+            && ! empty($user->password_reset_token_hash)
+            && $user->password_reset_token_expires_at
+            && ! $user->password_reset_token_expires_at->isPast()
+            && hash_equals($user->password_reset_token_hash, $tokenHash);
 
-        $tokenHash = hash('sha256', $validated['token']);
-
-        if (! hash_equals($user->password_reset_token_hash, $tokenHash)) {
-            return response()->json(['valid' => false]);
-        }
-
-        return response()->json(['valid' => true]);
+        return response()->json(['valid' => (bool) $isValid]);
     }
 
     /**

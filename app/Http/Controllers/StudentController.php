@@ -282,6 +282,38 @@ class StudentController extends Controller
     }
 
     /**
+     * Strictly verify that the user is authorized to access the given enrollment's documents
+     */
+    protected function verifyDocumentAccess($user, Enrollment $enrollment): void
+    {
+        if (! $user) {
+            abort(401, 'Unauthenticated.');
+        }
+
+        if ($user->role === 'STUDENT') {
+            if ($enrollment->user_id !== $user->id) {
+                abort(403, 'Unauthorized access: You do not own this document.');
+            }
+
+            return;
+        }
+
+        if ($user->role === 'COLLEGE_ADMIN') {
+            if (! $user->college_id || $enrollment->college_id !== $user->college_id) {
+                abort(403, 'Unauthorized access: Document belongs to a different college.');
+            }
+
+            return;
+        }
+
+        if (in_array($user->role, ['ADMIN', 'SUPERADMIN'], true)) {
+            return;
+        }
+
+        abort(403, 'Unauthorized access to this document.');
+    }
+
+    /**
      * Download fee challan
      */
     public function downloadChallan(Request $request, string $feeId, PdfService $pdfService)
@@ -291,13 +323,7 @@ class StudentController extends Controller
         $fee = Fee::with(['enrollment.user', 'enrollment.college'])->findOrFail($feeId);
         $enrollment = $fee->enrollment;
 
-        if ($user->role === 'STUDENT' && $enrollment->user_id !== $user->id) {
-            abort(403, 'Unauthorized access to this challan.');
-        }
-
-        if ($user->role === 'COLLEGE_ADMIN' && $user->college_id && $enrollment->college_id !== $user->college_id) {
-            abort(403, 'Unauthorized access to this challan.');
-        }
+        $this->verifyDocumentAccess($user, $enrollment);
 
         $pdf = $pdfService->generateChallan($fee, $enrollment, $enrollment->user);
 
@@ -316,13 +342,7 @@ class StudentController extends Controller
 
         $enrollment = Enrollment::with(['user', 'admitCard.seat', 'college'])->findOrFail($enrollmentId);
 
-        if ($user->role === 'STUDENT' && $enrollment->user_id !== $user->id) {
-            abort(403, 'Unauthorized access to this admit card.');
-        }
-
-        if ($user->role === 'COLLEGE_ADMIN' && $user->college_id && $enrollment->college_id !== $user->college_id) {
-            abort(403, 'Unauthorized access to this admit card.');
-        }
+        $this->verifyDocumentAccess($user, $enrollment);
 
         if (! $enrollment->admitCard) {
             return response()->json([
@@ -353,13 +373,7 @@ class StudentController extends Controller
             'college',
         ])->findOrFail($enrollmentId);
 
-        if ($user->role === 'STUDENT' && $enrollment->user_id !== $user->id) {
-            abort(403, 'Unauthorized access to this result card.');
-        }
-
-        if ($user->role === 'COLLEGE_ADMIN' && $user->college_id && $enrollment->college_id !== $user->college_id) {
-            abort(403, 'Unauthorized access to this result card.');
-        }
+        $this->verifyDocumentAccess($user, $enrollment);
 
         $pdf = $pdfService->generateResultCard($enrollment, $enrollment->results->toArray(), $enrollment->user);
 
@@ -378,13 +392,7 @@ class StudentController extends Controller
 
         $enrollment = Enrollment::with(['user', 'college', 'academicYear'])->findOrFail($enrollmentId);
 
-        if ($user->role === 'STUDENT' && $enrollment->user_id !== $user->id) {
-            abort(403, 'Unauthorized access to this application form.');
-        }
-
-        if ($user->role === 'COLLEGE_ADMIN' && $user->college_id && $enrollment->college_id !== $user->college_id) {
-            abort(403, 'Unauthorized access to this application form.');
-        }
+        $this->verifyDocumentAccess($user, $enrollment);
 
         $pdf = $pdfService->generateApplicationForm($enrollment, $enrollment->user);
 
@@ -403,13 +411,7 @@ class StudentController extends Controller
 
         $enrollment = Enrollment::with(['user', 'college', 'academicYear'])->findOrFail($enrollmentId);
 
-        if ($user->role === 'STUDENT' && $enrollment->user_id !== $user->id) {
-            abort(403, 'Unauthorized access to this registration card.');
-        }
-
-        if ($user->role === 'COLLEGE_ADMIN' && $user->college_id && $enrollment->college_id !== $user->college_id) {
-            abort(403, 'Unauthorized access to this registration card.');
-        }
+        $this->verifyDocumentAccess($user, $enrollment);
 
         $pdf = $pdfService->generateEnrollmentCard($enrollment, $enrollment->user);
 

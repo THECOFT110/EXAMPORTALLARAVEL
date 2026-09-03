@@ -112,7 +112,8 @@ class Fee extends Model
     public static function generateChallanNumber(): string
     {
         do {
-            $challan = 'SALU-'.now()->format('Ymd').'-'.strtoupper(Str::random(8));
+            $random = strtoupper(bin2hex(random_bytes(6)));
+            $challan = 'SALU-'.now()->format('Ymd').'-'.$random;
         } while (static::where('challan_number', $challan)->exists());
 
         return $challan;

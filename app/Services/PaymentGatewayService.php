@@ -45,14 +45,23 @@ class PaymentGatewayService
     /**
      * Whether JazzCash credentials are configured for real use.
      *
-     * The demo salt would let anyone forge signatures, so webhooks are
-     * refused in production until a real salt is configured.
+     * The demo salt would let anyone forge signatures, so webhooks and payments are
+     * strictly refused unless a real, cryptographically sufficient salt is configured.
      */
     public function isJazzCashConfigured(): bool
     {
-        $salt = config('services.jazzcash.salt', env('JAZZCASH_SALT', 'salt_demo'));
+        $salt = config('services.jazzcash.salt', env('JAZZCASH_SALT'));
 
-        return $salt !== 'salt_demo' || app()->isLocal() || app()->runningUnitTests();
+        if (empty($salt) || $salt === 'salt_demo') {
+            return false;
+        }
+
+        if (strlen($salt) < 16) {
+            Log::error('JazzCash salt does not meet minimum entropy requirements for secure use');
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -60,12 +69,17 @@ class PaymentGatewayService
      */
     public function verifyJazzCashSignature(array $data): bool
     {
+        if (! $this->isJazzCashConfigured()) {
+            Log::warning('JazzCash webhook signature verification rejected: gateway is not properly configured.');
+            return false;
+        }
+
         $receivedHash = $data['pp_SecureHash'] ?? null;
         if (! $receivedHash) {
             return false;
         }
 
-        $integritySalt = config('services.jazzcash.salt', env('JAZZCASH_SALT', 'salt_demo'));
+        $integritySalt = config('services.jazzcash.salt', env('JAZZCASH_SALT'));
         unset($data['pp_SecureHash']);
 
         ksort($data);

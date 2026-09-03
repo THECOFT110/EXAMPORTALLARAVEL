@@ -86,18 +86,7 @@
             </div>
         </form>
 
-        <!-- QUICK DEMO ACCESS (COMPACT) -->
-        <div class="demo-credentials-box py-1 px-2 mt-2 mb-1">
-            <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="text-white small" style="font-size: 0.7rem;"><i class="fas fa-wand-magic-sparkles text-warning me-1"></i> Quick Demo:</span>
-                <span class="text-muted" style="font-size: 0.65rem;">Auto-fills</span>
-            </div>
-            <div class="d-flex gap-1 flex-wrap">
-                <button type="button" class="demo-btn" onclick="fillDemo('admin@saluexamportal.edu.pk', 'admin123')">Super Admin</button>
-                <button type="button" class="demo-btn" onclick="fillDemo('admin2@saluexamportal.edu.pk', 'admin123')">Admin</button>
-                <button type="button" class="demo-btn" onclick="fillDemo('student@example.com', 'student123')">Student</button>
-            </div>
-        </div>
+
 
         <!-- CARD FOOTER -->
         <div class="salu-card-footer mt-2 pt-1">
@@ -142,11 +131,6 @@
             inp.type = 'password';
             if (icon) icon.className = 'fas fa-eye';
         }
-    }
-
-    function fillDemo(email, password) {
-        document.getElementById('cnicLoginInput').value = email;
-        document.getElementById('pwdLoginInput').value = password;
     }
 
     // Auto-hyphenation for CNIC

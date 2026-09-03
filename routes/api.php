@@ -22,21 +22,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Public routes
-Route::get('/health', fn() => response()->json(['status' => 'ok', 'timestamp' => now()]));
+Route::get('/health', fn() => response()->json(['status' => 'ok', 'version' => config('app.version', '1.0.0')]))->middleware('throttle:60,1');
 
-// Authentication routes (public with rate limiting)
+// Authentication routes (public with strict rate limiting)
 Route::prefix('auth')->group(function () {
-    Route::get('/check-email', [AuthController::class, 'checkEmail'])->middleware('throttle:30,1');
+    Route::get('/check-email', [AuthController::class, 'checkEmail'])->middleware('throttle:5,1');
     Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:5,1');
     Route::post('/recover-email', [AuthController::class, 'recoverEmail'])->middleware('throttle:5,1');
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->middleware('throttle:5,1');
     Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware('throttle:5,1');
-    Route::post('/verify-reset-token', [AuthController::class, 'verifyResetToken'])->middleware('throttle:10,1');
+    Route::post('/verify-reset-token', [AuthController::class, 'verifyResetToken'])->middleware('throttle:5,1');
     
     // Protected auth routes
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
+        Route::post('/force-change-password', [AuthController::class, 'apiForceChangePassword']);
         Route::post('/logout', [AuthController::class, 'logout']);
     });
 });
@@ -87,12 +88,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{id}', [EnrollmentController::class, 'destroy']);
     });
 
+    // Google Cloud Vision OCR document scanning
+    Route::post('/ocr/scan-document', [\App\Http\Controllers\OcrController::class, 'scanDocument'])->middleware('throttle:30,1');
+
     // Payment routes (Authenticated)
     Route::prefix('payment')->group(function () {
         Route::get('/history', [PaymentController::class, 'paymentHistory'])->middleware('check.role:STUDENT');
         Route::get('/fees/{feeId}', [PaymentController::class, 'getFee']);
         Route::post('/fees/{feeId}/initiate', [PaymentController::class, 'initiatePayment']);
-        Route::post('/fees/{feeId}/process', [PaymentController::class, 'processPayment'])->middleware('check.role:ADMIN,SUPERADMIN');
     });
 
     // Admin routes
